@@ -38,21 +38,32 @@ export default function Carrito({
       return;
     }
 
-    const desplazamientoAnterior = document.body.style.overflow;
+    const desplazamientoAnterior =
+      document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
 
-    const cerrarConEscape = (evento: KeyboardEvent) => {
+    const cerrarConEscape = (
+      evento: KeyboardEvent
+    ) => {
       if (evento.key === "Escape") {
         cerrar();
       }
     };
 
-    window.addEventListener("keydown", cerrarConEscape);
+    window.addEventListener(
+      "keydown",
+      cerrarConEscape
+    );
 
     return () => {
-      document.body.style.overflow = desplazamientoAnterior;
-      window.removeEventListener("keydown", cerrarConEscape);
+      document.body.style.overflow =
+        desplazamientoAnterior;
+
+      window.removeEventListener(
+        "keydown",
+        cerrarConEscape
+      );
     };
   }, [abierto, cerrar]);
 
@@ -63,26 +74,44 @@ export default function Carrito({
 
     const detalleDelPedido = carrito
       .map((producto) => {
-        const numeroProducto = String(producto.id).padStart(3, "0");
+        const numeroProducto = String(
+          producto.id
+        ).padStart(3, "0");
 
-        return (
-          `• Camisa #${numeroProducto}\n` +
-          `  Talla: ${producto.talla}\n` +
-          `  Cantidad: ${producto.cantidad}`
-        );
+        const enlaceImagen = new URL(
+          producto.imagen,
+          window.location.origin
+        ).href;
+
+        return [
+          `🛍️ Camisa #${numeroProducto}`,
+          `📏 Talla: ${producto.talla}`,
+          `🔢 Cantidad: ${producto.cantidad}`,
+          `🖼️ Ver imagen: ${enlaceImagen}`,
+        ].join("\n");
       })
-      .join("\n\n");
+      .join("\n\n────────────────────\n\n");
 
-    const mensaje =
-      `Hola AlfStore, quiero realizar el siguiente pedido:\n\n` +
-      `${detalleDelPedido}\n\n` +
-      `Total de prendas: ${totalArticulos}`;
+    const mensaje = [
+      "Hola AlfStore, quiero realizar el siguiente pedido:",
+      "",
+      detalleDelPedido,
+      "",
+      `Total de prendas: ${totalArticulos}`,
+      "",
+      "Por favor, confírmame la disponibilidad.",
+    ].join("\n");
 
-    const enlace = `https://wa.me/50360197818?text=${encodeURIComponent(
-      mensaje
-    )}`;
+    const enlaceWhatsApp =
+      `https://wa.me/50360197818?text=${encodeURIComponent(
+        mensaje
+      )}`;
 
-    window.open(enlace, "_blank", "noopener,noreferrer");
+    window.open(
+      enlaceWhatsApp,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   if (!abierto) {
@@ -122,7 +151,9 @@ export default function Carrito({
 
             <p className="mt-1 text-xs text-zinc-500">
               {totalArticulos}{" "}
-              {totalArticulos === 1 ? "prenda" : "prendas"}
+              {totalArticulos === 1
+                ? "prenda"
+                : "prendas"}
             </p>
           </div>
 
@@ -142,7 +173,9 @@ export default function Carrito({
           {carrito.length === 0 ? (
             <div className="flex min-h-[350px] flex-col items-center justify-center px-6 text-center">
               <div className="flex h-20 w-20 items-center justify-center rounded-full border border-zinc-800 bg-black">
-                <span className="text-4xl">🛍️</span>
+                <span className="text-4xl">
+                  🛍️
+                </span>
               </div>
 
               <h3 className="mt-6 text-lg font-black uppercase text-white">
@@ -150,8 +183,9 @@ export default function Carrito({
               </h3>
 
               <p className="mt-3 max-w-xs text-sm leading-7 text-zinc-500">
-                Selecciona una talla en el catálogo y presiona el botón
-                para agregar la camisa.
+                Selecciona una talla en el catálogo
+                y presiona el botón para agregar la
+                camisa.
               </p>
 
               <button
@@ -165,10 +199,9 @@ export default function Carrito({
           ) : (
             <div className="space-y-4">
               {carrito.map((producto) => {
-                const numeroProducto = String(producto.id).padStart(
-                  3,
-                  "0"
-                );
+                const numeroProducto = String(
+                  producto.id
+                ).padStart(3, "0");
 
                 return (
                   <article
@@ -191,7 +224,8 @@ export default function Carrito({
                     <div className="flex min-w-0 flex-1 flex-col justify-between">
                       <div className="min-w-0">
                         <p className="truncate text-sm font-black uppercase text-white">
-                          Camisa #{numeroProducto}
+                          Camisa #
+                          {numeroProducto}
                         </p>
 
                         <p className="mt-2 text-xs font-bold uppercase tracking-wider text-zinc-500">
