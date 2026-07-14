@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#09090b"></rect>
+
+  <rect x="40" y="40" width="720" height="920" rx="32" fill="#18181b" stroke="#3f3f46" stroke-width="4"></rect>
+
+  <path d="M300 270L230 320L140 440L240 510L280 460V750H520V460L560 510L660 440L570 320L500 270C475 310 445 330 400 330C355 330 325 310 300 270Z" fill="#27272a" stroke="#dc2626" stroke-width="10" stroke-linejoin="round"></path>
+
+  <text x="400" y="850" fill="#dc2626" font-family="serif" font-size="58" font-weight="bold" text-anchor="middle">
+    ALFSTORE
+  </text>
+
+  <text x="400" y="900" fill="#71717a" font-family="Arial, sans-serif" font-size="24" text-anchor="middle">
+    Imagen próximamente
+  </text>
+</svg>
