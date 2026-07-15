@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 
 import {
+  MessageCircle,
   Minus,
   Plus,
   ShoppingBag,
@@ -32,18 +33,13 @@ export default function Carrito() {
       document.body.style.overflow = "";
     }
 
-    const cerrarConEscape = (
-      evento: KeyboardEvent
-    ) => {
+    const cerrarConEscape = (evento: KeyboardEvent) => {
       if (evento.key === "Escape") {
         cerrarCarrito();
       }
     };
 
-    window.addEventListener(
-      "keydown",
-      cerrarConEscape
-    );
+    window.addEventListener("keydown", cerrarConEscape);
 
     return () => {
       document.body.style.overflow = "";
@@ -54,6 +50,60 @@ export default function Carrito() {
       );
     };
   }, [carritoAbierto, cerrarCarrito]);
+
+  const enviarPedidoWhatsApp = () => {
+    if (carrito.length === 0) {
+      return;
+    }
+
+    /*
+      NÚMERO DE WHATSAPP:
+      Código de país + número, sin espacios,
+      sin guiones y sin el signo +
+    */
+    const numeroWhatsApp = "50376356637";
+
+    const productosDelPedido = carrito
+      .map((item, indice) => {
+        /*
+          Cuando la página esté publicada en Vercel,
+          genera el enlace completo de cada imagen.
+        */
+        const enlaceImagen =
+          typeof window !== "undefined"
+            ? `${window.location.origin}${item.imagen}`
+            : item.imagen;
+
+        return [
+          `*Producto ${indice + 1}*`,
+          `Camisa: #${item.id}`,
+          `Talla: ${item.talla}`,
+          `Cantidad: ${item.cantidad}`,
+          `Imagen: ${enlaceImagen}`,
+        ].join("\n");
+      })
+      .join("\n\n");
+
+    const mensaje = [
+      "Hola, quiero realizar el siguiente pedido en *AlfStore*:",
+      "",
+      productosDelPedido,
+      "",
+      `*Total de productos: ${cantidadTotal}*`,
+      "",
+      "¿Me pueden confirmar disponibilidad y forma de entrega?",
+    ].join("\n");
+
+    const enlaceWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(
+      mensaje
+    )}`;
+
+    window.open(
+      enlaceWhatsApp,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
 
   if (!carritoAbierto) {
     return null;
@@ -93,6 +143,7 @@ export default function Carrito() {
           evento.stopPropagation()
         }
       >
+        {/* ENCABEZADO */}
         <div
           className="
             flex
@@ -105,11 +156,29 @@ export default function Carrito() {
           "
         >
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-600">
+            <p
+              className="
+                text-xs
+                font-bold
+                uppercase
+                tracking-[0.25em]
+                text-red-600
+              "
+            >
               AlfStore
             </p>
 
-            <h2 className="mt-1 flex items-center gap-2 text-xl font-black uppercase">
+            <h2
+              className="
+                mt-1
+                flex
+                items-center
+                gap-2
+                text-xl
+                font-black
+                uppercase
+              "
+            >
               <ShoppingBag size={22} />
               Tu carrito
             </h2>
@@ -139,6 +208,7 @@ export default function Carrito() {
           </button>
         </div>
 
+        {/* CONTENIDO */}
         <div className="flex-1 overflow-y-auto px-4 py-5">
           {carrito.length === 0 ? (
             <div
@@ -170,11 +240,26 @@ export default function Carrito() {
                 <ShoppingBag size={34} />
               </div>
 
-              <h3 className="mt-5 text-lg font-black uppercase">
+              <h3
+                className="
+                  mt-5
+                  text-lg
+                  font-black
+                  uppercase
+                "
+              >
                 Tu carrito está vacío
               </h3>
 
-              <p className="mt-2 max-w-xs text-sm leading-6 text-zinc-500">
+              <p
+                className="
+                  mt-2
+                  max-w-xs
+                  text-sm
+                  leading-6
+                  text-zinc-500
+                "
+              >
                 Selecciona una talla y presiona
                 Agregar al carrito.
               </p>
@@ -215,6 +300,7 @@ export default function Carrito() {
                     p-3
                   "
                 >
+                  {/* IMAGEN DEL PRODUCTO */}
                   <div
                     className="
                       relative
@@ -235,21 +321,57 @@ export default function Carrito() {
                     />
                   </div>
 
-                  <div className="flex min-w-0 flex-1 flex-col justify-between">
+                  {/* INFORMACIÓN */}
+                  <div
+                    className="
+                      flex
+                      min-w-0
+                      flex-1
+                      flex-col
+                      justify-between
+                    "
+                  >
                     <div>
-                      <p className="text-sm font-black uppercase">
+                      <p
+                        className="
+                          text-sm
+                          font-black
+                          uppercase
+                        "
+                      >
                         Camisa #{item.id}
                       </p>
 
-                      <p className="mt-1 text-xs uppercase tracking-wider text-zinc-400">
+                      <p
+                        className="
+                          mt-1
+                          text-xs
+                          uppercase
+                          tracking-wider
+                          text-zinc-400
+                        "
+                      >
                         Talla:{" "}
-                        <span className="font-bold text-red-500">
+                        <span
+                          className="
+                            font-bold
+                            text-red-500
+                          "
+                        >
                           {item.talla}
                         </span>
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between gap-2">
+                    <div
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        gap-2
+                      "
+                    >
+                      {/* CANTIDAD */}
                       <div
                         className="
                           flex
@@ -326,6 +448,7 @@ export default function Carrito() {
                         </button>
                       </div>
 
+                      {/* ELIMINAR */}
                       <button
                         type="button"
                         onClick={() =>
@@ -361,6 +484,7 @@ export default function Carrito() {
           )}
         </div>
 
+        {/* PARTE INFERIOR */}
         {carrito.length > 0 && (
           <div
             className="
@@ -371,20 +495,70 @@ export default function Carrito() {
               py-5
             "
           >
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm uppercase tracking-wider text-zinc-400">
+            <div
+              className="
+                mb-4
+                flex
+                items-center
+                justify-between
+              "
+            >
+              <span
+                className="
+                  text-sm
+                  uppercase
+                  tracking-wider
+                  text-zinc-400
+                "
+              >
                 Total de productos
               </span>
 
-              <span className="text-xl font-black text-white">
+              <span
+                className="
+                  text-xl
+                  font-black
+                  text-white
+                "
+              >
                 {cantidadTotal}
               </span>
             </div>
 
+            {/* BOTÓN DE WHATSAPP */}
+            <button
+              type="button"
+              onClick={enviarPedidoWhatsApp}
+              className="
+                flex
+                min-h-12
+                w-full
+                items-center
+                justify-center
+                gap-2
+                rounded-lg
+                bg-green-600
+                px-4
+                text-xs
+                font-black
+                uppercase
+                tracking-wider
+                text-white
+                transition
+                hover:bg-green-500
+                active:scale-[0.98]
+              "
+            >
+              <MessageCircle size={19} />
+              Enviar pedido por WhatsApp
+            </button>
+
+            {/* VACIAR CARRITO */}
             <button
               type="button"
               onClick={vaciarCarrito}
               className="
+                mt-3
                 flex
                 min-h-11
                 w-full
