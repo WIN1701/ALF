@@ -7,6 +7,8 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import VideoHero from "@/Components/VideoHero";
+
 export default function Hero() {
   const reducirMovimiento = useReducedMotion();
 
@@ -16,8 +18,8 @@ export default function Hero() {
       className="
         relative
         flex
-        min-h-[650px]
         h-[100svh]
+        min-h-[650px]
         max-h-[950px]
         w-full
         items-center
@@ -28,35 +30,23 @@ export default function Hero() {
         text-white
       "
     >
-      {/* VIDEO DE FONDO */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-hidden="true"
-        tabIndex={-1}
-        className="
-          absolute
-          inset-0
-          h-full
-          w-full
-          object-cover
-        "
-      >
-        <source
-          src="/videos/hero-alfstore.mp4"
-          type="video/mp4"
-        />
-      </video>
+      {/* VIDEO COMPATIBLE CON CELULARES Y TABLETS */}
+      <VideoHero />
 
       {/* CAPA OSCURA SOBRE EL VIDEO */}
-      <div className="absolute inset-0 bg-black/55" />
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          bg-black/55
+        "
+      />
 
       {/* SOMBRA SUPERIOR E INFERIOR */}
       <div
         className="
+          pointer-events-none
           absolute
           inset-0
           bg-gradient-to-b
@@ -69,10 +59,11 @@ export default function Hero() {
       {/* SOMBRA LATERAL */}
       <div
         className="
+          pointer-events-none
           absolute
           inset-0
           bg-gradient-to-r
-          from-black/80
+          from-black/85
           via-black/20
           to-black/60
         "
@@ -136,15 +127,22 @@ export default function Hero() {
         "
       />
 
-      {/* LÍNEAS DECORATIVAS */}
+      {/* LÍNEA DECORATIVA SUPERIOR */}
       <motion.div
-        initial={{ width: 0, opacity: 0 }}
-        animate={{ width: "100%", opacity: 1 }}
+        initial={{
+          width: 0,
+          opacity: 0,
+        }}
+        animate={{
+          width: "100%",
+          opacity: 1,
+        }}
         transition={{
           duration: reducirMovimiento ? 0 : 1.4,
           delay: reducirMovimiento ? 0 : 0.2,
         }}
         className="
+          pointer-events-none
           absolute
           left-0
           top-20
@@ -222,7 +220,7 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* TÍTULO */}
+        {/* TÍTULO PRINCIPAL */}
         <motion.h1
           initial={{
             opacity: 0,
@@ -333,6 +331,7 @@ export default function Hero() {
             lg:items-start
           "
         >
+          {/* BOTÓN VER COLECCIÓN */}
           <motion.a
             href="#catalogo"
             whileHover={
@@ -352,7 +351,7 @@ export default function Hero() {
             className="
               group
               flex
-              min-h-13
+              min-h-12
               w-full
               items-center
               justify-center
@@ -384,6 +383,7 @@ export default function Hero() {
             />
           </motion.a>
 
+          {/* BOTÓN HISTORIA */}
           <motion.a
             href="#historia"
             whileHover={
@@ -402,7 +402,7 @@ export default function Hero() {
             }
             className="
               flex
-              min-h-13
+              min-h-12
               w-full
               items-center
               justify-center
@@ -431,8 +431,12 @@ export default function Hero() {
 
         {/* FRASE INFERIOR */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{
+            opacity: 0,
+          }}
+          animate={{
+            opacity: 1,
+          }}
           transition={{
             duration: reducirMovimiento ? 0 : 1,
             delay: reducirMovimiento ? 0 : 1.4,
@@ -465,8 +469,12 @@ export default function Hero() {
       <motion.a
         href="#catalogo"
         aria-label="Bajar hacia la colección"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
         transition={{
           duration: reducirMovimiento ? 0 : 0.8,
           delay: reducirMovimiento ? 0 : 1.7,
