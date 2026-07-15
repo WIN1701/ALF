@@ -49,6 +49,50 @@ video {
   color: #ffffff;
 }
 
+/* CATÁLOGO */
+
+.catalogo-grid {
+  width: 100%;
+  align-items: stretch;
+}
+
+.producto-card {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/*
+  DOS PRODUCTOS POR FILA EN TELÉFONOS.
+  TAMBIÉN AYUDA AL ACTIVAR SITIO DE COMPUTADORA.
+*/
+
+@media (pointer: coarse) and (max-width: 1100px) {
+  .catalogo-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* CELULARES PEQUEÑOS */
+
+@media (max-width: 350px) {
+  .catalogo-grid {
+    gap: 8px !important;
+  }
+}
+
+/* ALTURA CORRECTA EN NAVEGADORES MÓVILES */
+
+@supports (height: 100dvh) {
+  .h-\[100dvh\] {
+    height: 100dvh;
+  }
+}
+
+/* REDUCIR ANIMACIONES CUANDO EL TELÉFONO LO SOLICITA */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

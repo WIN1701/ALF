@@ -11,7 +11,7 @@ import {
 
 export type Talla = "S" | "M" | "L" | "XL";
 
-export interface ProductoParaCarrito {
+export interface ProductoBase {
   id: number;
   imagen: string;
 }
@@ -29,7 +29,7 @@ interface CartContextType {
   cantidadTotal: number;
 
   agregarAlCarrito: (
-    producto: ProductoParaCarrito,
+    producto: ProductoBase,
     talla: Talla
   ) => void;
 
@@ -53,13 +53,13 @@ interface CartContextType {
   vaciarCarrito: () => void;
 }
 
-const CartContext = createContext<
-  CartContextType | undefined
->(undefined);
-
 interface CartProviderProps {
   children: ReactNode;
 }
+
+const CartContext = createContext<
+  CartContextType | undefined
+>(undefined);
 
 export function CartProvider({
   children,
@@ -72,10 +72,7 @@ export function CartProvider({
     useState(false);
 
   const agregarAlCarrito = useCallback(
-    (
-      producto: ProductoParaCarrito,
-      talla: Talla
-    ) => {
+    (producto: ProductoBase, talla: Talla) => {
       setCarrito((carritoAnterior) => {
         const productoExistente =
           carritoAnterior.find(
@@ -175,7 +172,8 @@ export function CartProvider({
 
   const cantidadTotal = useMemo(() => {
     return carrito.reduce(
-      (total, item) => total + item.cantidad,
+      (total, producto) =>
+        total + producto.cantidad,
       0
     );
   }, [carrito]);
@@ -219,7 +217,7 @@ export function useCart(): CartContextType {
 
   if (!contexto) {
     throw new Error(
-      "useCart debe utilizarse dentro de CartProvider"
+      "useCart debe usarse dentro de CartProvider"
     );
   }
 
