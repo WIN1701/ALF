@@ -5,8 +5,6 @@ import {
   useState,
 } from "react";
 
-import Image from "next/image";
-
 import {
   Check,
   ChevronLeft,
@@ -133,7 +131,10 @@ export default function Catalogo() {
     }
 
     agregarAlCarrito(
-      producto,
+      {
+        id: producto.id,
+        imagen: producto.imagen,
+      },
       tallaSeleccionada
     );
 
@@ -141,8 +142,11 @@ export default function Catalogo() {
 
     window.setTimeout(() => {
       setProductoAgregado(null);
+    }, 1000);
+
+    window.setTimeout(() => {
       abrirCarrito();
-    }, 350);
+    }, 250);
   };
 
   const cambiarPagina = (
@@ -165,6 +169,17 @@ export default function Catalogo() {
           block: "start",
         });
     }, 100);
+  };
+
+  const registrarErrorImagen = (
+    productoId: number
+  ) => {
+    setImagenesConError(
+      (estadoAnterior) => ({
+        ...estadoAnterior,
+        [productoId]: true,
+      })
+    );
   };
 
   return (
@@ -223,7 +238,7 @@ export default function Catalogo() {
               "
             >
               Selecciona una talla y agrega la
-              camisa al carrito. Presiona la imagen
+              camisa al carrito. Presiona una imagen
               para verla ampliada.
             </p>
 
@@ -243,20 +258,7 @@ export default function Catalogo() {
           </div>
 
           {/* PRODUCTOS */}
-          <div
-            className="
-              catalogo-grid
-              grid
-              w-full
-              grid-cols-2
-              items-stretch
-              gap-3
-              sm:grid-cols-3
-              sm:gap-5
-              lg:grid-cols-4
-              xl:grid-cols-5
-            "
-          >
+          <div className="catalogo-grid">
             {productosVisibles.map(
               (producto) => {
                 const tallaSeleccionada =
@@ -276,17 +278,7 @@ export default function Catalogo() {
                 return (
                   <article
                     key={producto.id}
-                    className="
-                      producto-card
-                      flex
-                      min-w-0
-                      flex-col
-                      overflow-hidden
-                      rounded-2xl
-                      border
-                      border-white/15
-                      bg-[#080808]
-                    "
+                    className="producto-card"
                   >
                     {/* IMAGEN */}
                     <button
@@ -299,19 +291,8 @@ export default function Catalogo() {
                           );
                         }
                       }}
-                      className="
-                        group
-                        relative
-                        block
-                        aspect-[4/5]
-                        w-full
-                        shrink-0
-                        overflow-hidden
-                        border-0
-                        bg-[#050505]
-                        p-0
-                      "
-                      aria-label={`Ampliar producto ${producto.id}`}
+                      className="producto-media"
+                      aria-label={`Ampliar camisa ${producto.id}`}
                     >
                       {imagenConError ? (
                         <div
@@ -343,36 +324,18 @@ export default function Catalogo() {
                           </span>
                         </div>
                       ) : (
-                        <Image
+                        <img
                           src={producto.imagen}
-                          alt={`Diseño AlfStore ${producto.id}`}
-                          width={800}
-                          height={1000}
-                          unoptimized
-                          priority={
-                            paginaActual === 1 &&
-                            producto.id <= 4
+                          alt={`Camisa AlfStore ${producto.id}`}
+                          loading="lazy"
+                          decoding="async"
+                          draggable={false}
+                          onError={() =>
+                            registrarErrorImagen(
+                              producto.id
+                            )
                           }
-                          onError={() => {
-                            setImagenesConError(
-                              (
-                                estadoAnterior
-                              ) => ({
-                                ...estadoAnterior,
-                                [producto.id]:
-                                  true,
-                              })
-                            );
-                          }}
-                          className="
-                            h-full
-                            w-full
-                            object-contain
-                            object-center
-                            transition-transform
-                            duration-300
-                            group-hover:scale-[1.02]
-                          "
+                          className="producto-foto"
                         />
                       )}
 
@@ -399,20 +362,34 @@ export default function Catalogo() {
                       )}
                     </button>
 
-                    {/* TALLAS Y CARRITO */}
+                    {/* INFORMACIÓN */}
                     <div
                       className="
                         flex
-                        min-h-[165px]
+                        min-h-[170px]
                         flex-1
                         flex-col
                         border-t
                         border-white/10
                         p-3
-                        sm:min-h-[185px]
+                        sm:min-h-[190px]
                         sm:p-4
                       "
                     >
+                      <p
+                        className="
+                          mb-1
+                          text-center
+                          text-[9px]
+                          font-bold
+                          uppercase
+                          tracking-wider
+                          text-zinc-600
+                        "
+                      >
+                        Camisa #{producto.id}
+                      </p>
+
                       <p
                         className="
                           mb-4
@@ -429,6 +406,7 @@ export default function Catalogo() {
                         Selecciona tu talla
                       </p>
 
+                      {/* TALLAS */}
                       <div
                         className="
                           grid
@@ -472,6 +450,7 @@ export default function Catalogo() {
                                     : "border-white/20 bg-black text-zinc-400"
                                 }
                               `}
+                              aria-label={`Seleccionar talla ${talla}`}
                             >
                               {talla}
                             </button>
@@ -479,6 +458,7 @@ export default function Catalogo() {
                         })}
                       </div>
 
+                      {/* AGREGAR */}
                       <button
                         type="button"
                         disabled={
@@ -636,12 +616,12 @@ export default function Catalogo() {
         </div>
       </section>
 
-      {/* IMAGEN AMPLIADA */}
+      {/* VISTA AMPLIADA */}
       {imagenAmpliada && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Vista ampliada"
+          aria-label="Vista ampliada del producto"
           className="
             fixed
             inset-0
@@ -698,31 +678,13 @@ export default function Catalogo() {
               <X size={24} />
             </button>
 
-            <div
-              className="
-                flex
-                h-[70dvh]
-                max-h-[680px]
-                w-full
-                items-center
-                justify-center
-                overflow-hidden
-                bg-black
-              "
-            >
-              <Image
+            <div className="modal-producto">
+              <img
                 src={imagenAmpliada}
-                alt="Vista ampliada del producto"
-                width={900}
-                height={1125}
-                unoptimized
-                priority
-                className="
-                  h-full
-                  w-full
-                  object-contain
-                  object-center
-                "
+                alt="Vista ampliada de la camisa"
+                decoding="async"
+                draggable={false}
+                className="modal-producto-foto"
               />
             </div>
           </div>

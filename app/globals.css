@@ -49,49 +49,144 @@ video {
   color: #ffffff;
 }
 
-/* CATÁLOGO */
+/* CUADRÍCULA DEL CATÁLOGO */
 
 .catalogo-grid {
+  display: grid;
   width: 100%;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
   align-items: stretch;
+  gap: 12px;
 }
 
 .producto-card {
+  display: flex;
   width: 100%;
   min-width: 0;
   height: 100%;
+  flex-direction: column;
   overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 16px;
+  background-color: #080808;
 }
 
 /*
-  DOS PRODUCTOS POR FILA EN TELÉFONOS.
-  TAMBIÉN AYUDA AL ACTIVAR SITIO DE COMPUTADORA.
+  CONTENEDOR FIJO:
+  evita que la imagen crezca o se estire.
+*/
+
+.producto-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  background-color: #050505;
+}
+
+/*
+  IMAGEN ORIGINAL SIN OPTIMIZADOR,
+  SIN TRANSFORMACIONES Y SIN DEFORMACIÓN.
+*/
+
+.producto-foto {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: auto;
+  transform: none;
+}
+
+/* IMAGEN AMPLIADA */
+
+.modal-producto {
+  display: flex;
+  width: 100%;
+  height: min(72dvh, 680px);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.modal-producto-foto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: auto;
+  transform: none;
+}
+
+/* TABLET */
+
+@media (min-width: 640px) {
+  .catalogo-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+/* COMPUTADORA */
+
+@media (min-width: 1024px) {
+  .catalogo-grid {
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* COMPUTADORA GRANDE */
+
+@media (min-width: 1280px) {
+  .catalogo-grid {
+    grid-template-columns:
+      repeat(5, minmax(0, 1fr));
+  }
+}
+
+/*
+  CELULAR EN MODO SITIO DE COMPUTADORA.
 */
 
 @media (pointer: coarse) and (max-width: 1100px) {
   .catalogo-grid {
     grid-template-columns:
       repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
   }
 }
-
-/* CELULARES PEQUEÑOS */
 
 @media (max-width: 350px) {
   .catalogo-grid {
-    gap: 8px !important;
+    gap: 8px;
   }
 }
 
-/* ALTURA CORRECTA EN NAVEGADORES MÓVILES */
+/* REDUCE EFECTOS PESADOS EN TELÉFONOS */
 
-@supports (height: 100dvh) {
-  .h-\[100dvh\] {
-    height: 100dvh;
+@media (pointer: coarse) {
+  .producto-foto,
+  .modal-producto-foto {
+    transform: none !important;
+    transition: none !important;
+    filter: none !important;
   }
 }
 
-/* REDUCIR ANIMACIONES CUANDO EL TELÉFONO LO SOLICITA */
+/* REDUCIR ANIMACIONES */
 
 @media (prefers-reduced-motion: reduce) {
   html {
