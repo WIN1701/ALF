@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ShoppingBag, X, ZoomIn } from "lucide-react";
+import { X, ZoomIn } from "lucide-react";
 import { productos } from "@/data/productos";
 
 type Talla = "S" | "M" | "L" | "XL";
@@ -15,11 +15,10 @@ export default function Catalogo() {
   );
 
   const [tallasSeleccionadas, setTallasSeleccionadas] = useState<
-    Record<string, Talla>
+    Record<number, Talla>
   >({});
 
-  /* BLOQUEA EL MOVIMIENTO DE LA PÁGINA
-     CUANDO LA IMAGEN ESTÁ ABIERTA */
+  // Bloquea el movimiento de la página cuando la imagen está abierta
   useEffect(() => {
     if (imagenAmpliada) {
       document.body.style.overflow = "hidden";
@@ -42,23 +41,24 @@ export default function Catalogo() {
   }, [imagenAmpliada]);
 
   const seleccionarTalla = (
-    productoId: string | number,
+    productoId: number,
     talla: Talla
   ) => {
-    setTallasSeleccionadas((anteriores) => ({
-      ...anteriores,
-      [String(productoId)]: talla,
+    setTallasSeleccionadas((tallasAnteriores) => ({
+      ...tallasAnteriores,
+      [productoId]: talla,
     }));
   };
 
   return (
     <>
+      {/* SECCIÓN PRINCIPAL DEL CATÁLOGO */}
       <section
         id="catalogo"
-        className="min-h-screen bg-black px-4 py-16 text-white sm:px-6 lg:px-8"
+        className="scroll-mt-20 bg-black px-3 py-20 text-white sm:px-6 lg:px-8"
       >
         <div className="mx-auto max-w-[1600px]">
-          {/* TÍTULO */}
+          {/* ENCABEZADO */}
           <div className="mb-10 text-center">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-red-600">
               AlfStore
@@ -68,40 +68,22 @@ export default function Catalogo() {
               Nuestra colección
             </h2>
 
-            <p className="mx-auto mt-4 max-w-xl text-sm text-zinc-400 sm:text-base">
-              Presiona una camisa para verla en tamaño ampliado.
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-zinc-400 sm:text-base">
+              Selecciona tu talla y presiona cualquier camisa para
+              verla en tamaño ampliado.
             </p>
           </div>
 
-          {/* PRODUCTOS */}
-          <div
-            className="
-              grid
-              grid-cols-2
-              gap-4
-              sm:grid-cols-3
-              lg:grid-cols-4
-              xl:grid-cols-5
-            "
-          >
+          {/* CUADRÍCULA DE PRODUCTOS */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5">
             {productos.map((producto) => {
-              const productoId = String(producto.id);
               const tallaElegida =
-                tallasSeleccionadas[productoId];
+                tallasSeleccionadas[producto.id];
 
               return (
                 <article
                   key={producto.id}
-                  className="
-                    overflow-hidden
-                    rounded-2xl
-                    border
-                    border-white/15
-                    bg-[#080808]
-                    transition
-                    duration-300
-                    hover:border-red-700/60
-                  "
+                  className="overflow-hidden rounded-2xl border border-white/15 bg-[#080808] transition duration-300 hover:border-red-700/60"
                 >
                   {/* IMAGEN DEL PRODUCTO */}
                   <button
@@ -109,21 +91,12 @@ export default function Catalogo() {
                     onClick={() =>
                       setImagenAmpliada(producto.imagen)
                     }
-                    className="
-                      group
-                      relative
-                      block
-                      aspect-[4/5]
-                      w-full
-                      cursor-zoom-in
-                      overflow-hidden
-                      bg-black
-                    "
-                    aria-label="Ampliar imagen de la camisa"
+                    className="group relative block aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-black"
+                    aria-label={`Ampliar imagen de la camisa ${producto.id}`}
                   >
                     <Image
                       src={producto.imagen}
-                      alt="Camisa AlfStore"
+                      alt={`Camisa AlfStore ${producto.id}`}
                       fill
                       sizes="
                         (max-width: 640px) 50vw,
@@ -131,100 +104,34 @@ export default function Catalogo() {
                         (max-width: 1280px) 25vw,
                         20vw
                       "
-                      className="
-                        object-cover
-                        transition-transform
-                        duration-500
-                        group-hover:scale-105
-                      "
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
 
-                    {/* OSCURECIDO AL PASAR EL MOUSE */}
-                    <div
-                      className="
-                        absolute
-                        inset-0
-                        flex
-                        items-center
-                        justify-center
-                        bg-black/0
-                        transition
-                        duration-300
-                        group-hover:bg-black/30
-                      "
-                    >
-                      <div
-                        className="
-                          hidden
-                          items-center
-                          gap-2
-                          rounded-full
-                          border
-                          border-white/30
-                          bg-black/80
-                          px-4
-                          py-2
-                          text-xs
-                          font-bold
-                          uppercase
-                          tracking-wider
-                          text-white
-                          opacity-0
-                          transition
-                          duration-300
-                          group-hover:opacity-100
-                          sm:flex
-                        "
-                      >
+                    {/* CAPA OSCURA */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-300 group-hover:bg-black/35">
+                      {/* BOTÓN VISIBLE EN COMPUTADORA */}
+                      <div className="hidden items-center gap-2 rounded-full border border-white/30 bg-black/80 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white opacity-0 transition duration-300 group-hover:opacity-100 sm:flex">
                         <ZoomIn size={17} />
-
                         Ver camisa
                       </div>
                     </div>
 
                     {/* ICONO VISIBLE EN CELULAR */}
-                    <span
-                      className="
-                        absolute
-                        bottom-3
-                        right-3
-                        flex
-                        h-9
-                        w-9
-                        items-center
-                        justify-center
-                        rounded-full
-                        border
-                        border-white/20
-                        bg-black/80
-                        text-white
-                        sm:hidden
-                      "
-                    >
+                    <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white sm:hidden">
                       <ZoomIn size={18} />
                     </span>
                   </button>
 
-                  {/* TALLAS */}
-                  <div className="p-4 sm:p-5">
-                    <p
-                      className="
-                        mb-4
-                        text-center
-                        text-[11px]
-                        font-bold
-                        uppercase
-                        tracking-[0.14em]
-                        text-zinc-400
-                        sm:text-sm
-                      "
-                    >
+                  {/* INFORMACIÓN DE TALLAS */}
+                  <div className="p-3 sm:p-5">
+                    <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-400 sm:text-sm">
                       Selecciona tu talla
                     </p>
 
-                    <div className="grid grid-cols-4 gap-2">
+                    {/* BOTONES DE TALLA */}
+                    <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
                       {tallas.map((talla) => {
-                        const seleccionada =
+                        const estaSeleccionada =
                           tallaElegida === talla;
 
                         return (
@@ -244,14 +151,13 @@ export default function Catalogo() {
                               justify-center
                               rounded-full
                               border
-                              text-sm
+                              text-xs
                               font-semibold
                               transition
                               duration-200
                               sm:text-base
-
                               ${
-                                seleccionada
+                                estaSeleccionada
                                   ? "border-red-600 bg-red-700 text-white"
                                   : "border-white/20 bg-transparent text-zinc-400 hover:border-white hover:text-white"
                               }
@@ -264,40 +170,35 @@ export default function Catalogo() {
                       })}
                     </div>
 
-                    {/* BOTÓN DEL PRODUCTO */}
-                    <button
-                      type="button"
-                      disabled={!tallaElegida}
+                    {/* MENSAJE DE TALLA SELECCIONADA */}
+                    <div
                       className={`
-                        mt-5
+                        mt-4
                         flex
-                        min-h-12
+                        min-h-10
                         w-full
                         items-center
                         justify-center
-                        gap-2
-                        rounded-xl
-                        px-3
-                        text-xs
+                        rounded-lg
+                        border
+                        px-2
+                        text-center
+                        text-[10px]
                         font-bold
                         uppercase
                         tracking-[0.08em]
-                        transition
-                        sm:text-sm
-
+                        sm:text-xs
                         ${
                           tallaElegida
-                            ? "cursor-pointer bg-red-700 text-white hover:bg-red-600 active:scale-[0.98]"
-                            : "cursor-not-allowed bg-zinc-800 text-zinc-500"
+                            ? "border-red-700/50 bg-red-950/40 text-red-400"
+                            : "border-white/10 bg-zinc-900 text-zinc-500"
                         }
                       `}
                     >
-                      <ShoppingBag size={19} />
-
                       {tallaElegida
                         ? `Talla ${tallaElegida} seleccionada`
-                        : "Elige talla"}
-                    </button>
+                        : "Elige una talla"}
+                    </div>
                   </div>
                 </article>
               );
@@ -306,59 +207,24 @@ export default function Catalogo() {
         </div>
       </section>
 
-      {/* VENTANA CON LA IMAGEN AMPLIADA */}
+      {/* VENTANA DE IMAGEN AMPLIADA */}
       {imagenAmpliada && (
         <div
-          className="
-            fixed
-            inset-0
-            z-[9999]
-            flex
-            items-center
-            justify-center
-            bg-black/90
-            px-4
-            py-6
-            backdrop-blur-sm
-          "
+          role="dialog"
+          aria-modal="true"
+          aria-label="Vista ampliada del producto"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 px-4 py-6 backdrop-blur-sm"
           onClick={() => setImagenAmpliada(null)}
         >
           <div
-            className="
-              relative
-              w-full
-              max-w-lg
-              overflow-hidden
-              rounded-2xl
-              border
-              border-white/20
-              bg-[#080808]
-              shadow-2xl
-            "
+            className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/20 bg-[#080808] shadow-2xl"
             onClick={(evento) => evento.stopPropagation()}
           >
             {/* BOTÓN CERRAR */}
             <button
               type="button"
               onClick={() => setImagenAmpliada(null)}
-              className="
-                absolute
-                right-3
-                top-3
-                z-20
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/20
-                bg-black/80
-                text-white
-                transition
-                hover:bg-red-700
-              "
+              className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/80 text-white transition hover:border-red-500 hover:bg-red-700"
               aria-label="Cerrar imagen"
             >
               <X size={24} />
