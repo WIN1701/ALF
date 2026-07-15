@@ -5,7 +5,9 @@
   color: #ffffff;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -16,6 +18,7 @@ html {
 
 body {
   margin: 0;
+  width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
   background-color: #000000;
@@ -25,6 +28,10 @@ body {
 button,
 a {
   -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: inherit;
 }
 
 img,
@@ -37,12 +44,31 @@ video {
   background-color: #000000;
 }
 
-.catalogo-grid > article {
+::selection {
+  background-color: #b91c1c;
+  color: #ffffff;
+}
+
+.catalogo-grid {
+  width: 100%;
+  align-items: stretch;
+}
+
+.catalogo-grid > .producto-card {
+  width: 100%;
   min-width: 0;
   height: 100%;
 }
 
-/* Celulares normales y celulares en modo escritorio */
+.producto-card {
+  isolation: isolate;
+  contain: layout paint;
+}
+
+/*
+  Mantiene dos productos por fila en celulares,
+  incluso usando "Sitio para computadora".
+*/
 @media (pointer: coarse) and (max-width: 1100px) {
   .catalogo-grid {
     grid-template-columns:
@@ -58,6 +84,7 @@ video {
   }
 }
 
+/* Reduce animaciones cuando el dispositivo lo solicita */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -66,9 +93,9 @@ video {
   *,
   *::before,
   *::after {
+    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

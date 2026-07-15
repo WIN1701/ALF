@@ -1,6 +1,13 @@
 "use client";
 
 import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import {
   motion,
   useReducedMotion,
 } from "framer-motion";
@@ -8,13 +15,91 @@ import {
 import {
   ArrowDown,
   ArrowRight,
+  Play,
   Sparkles,
 } from "lucide-react";
 
-import VideoHero from "@/Components/VideoHero";
-
 export default function Hero() {
+  const videoRef = useRef<HTMLVideoElement | null>(
+    null
+  );
+
   const reducirMovimiento = useReducedMotion();
+
+  const [mostrarBotonVideo, setMostrarBotonVideo] =
+    useState(false);
+
+  const [errorVideo, setErrorVideo] =
+    useState(false);
+
+  const reproducirVideo = useCallback(async () => {
+    const video = videoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.volume = 0;
+
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute(
+      "webkit-playsinline",
+      "true"
+    );
+
+    try {
+      await video.play();
+
+      setMostrarBotonVideo(false);
+      setErrorVideo(false);
+    } catch {
+      setMostrarBotonVideo(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const temporizador = window.setTimeout(() => {
+      void reproducirVideo();
+    }, 300);
+
+    const reanudarVideo = () => {
+      const video = videoRef.current;
+
+      if (
+        document.visibilityState === "visible" &&
+        video?.paused
+      ) {
+        void reproducirVideo();
+      }
+    };
+
+    window.addEventListener(
+      "pageshow",
+      reproducirVideo
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      reanudarVideo
+    );
+
+    return () => {
+      window.clearTimeout(temporizador);
+
+      window.removeEventListener(
+        "pageshow",
+        reproducirVideo
+      );
+
+      document.removeEventListener(
+        "visibilitychange",
+        reanudarVideo
+      );
+    };
+  }, [reproducirVideo]);
 
   return (
     <section
@@ -23,7 +108,7 @@ export default function Hero() {
         relative
         flex
         h-[100svh]
-        min-h-[620px]
+        min-h-[640px]
         max-h-[950px]
         w-full
         items-center
@@ -35,36 +120,101 @@ export default function Hero() {
       "
     >
       {/* VIDEO */}
-      <VideoHero />
+      <div className="absolute inset-0 overflow-hidden bg-black">
+        {!errorVideo && (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            controls={false}
+            disablePictureInPicture
+            disableRemotePlayback
+            poster="/productos/camisa001.webp"
+            aria-hidden="true"
+            tabIndex={-1}
+            onCanPlay={() => {
+              void reproducirVideo();
+            }}
+            onPlaying={() => {
+              setMostrarBotonVideo(false);
+            }}
+            onError={() => {
+              setErrorVideo(true);
+              setMostrarBotonVideo(false);
+            }}
+            className="
+              absolute
+              inset-0
+              h-full
+              w-full
+              object-cover
+              object-center
+            "
+          >
+            <source
+              src="/videos/hero-alfstore.mp4"
+              type="video/mp4"
+            />
+          </video>
+        )}
+
+        {errorVideo && (
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-red-950/40 to-black" />
+        )}
+
+        {mostrarBotonVideo && !errorVideo && (
+          <button
+            type="button"
+            onClick={() => {
+              void reproducirVideo();
+            }}
+            className="
+              absolute
+              left-1/2
+              top-1/2
+              z-30
+              flex
+              -translate-x-1/2
+              -translate-y-1/2
+              items-center
+              gap-3
+              rounded-full
+              border
+              border-white/30
+              bg-black/85
+              px-5
+              py-3
+              text-xs
+              font-black
+              uppercase
+              tracking-wider
+              text-white
+              backdrop-blur-md
+            "
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-red-700">
+              <Play
+                size={18}
+                fill="currentColor"
+              />
+            </span>
+
+            Reproducir
+          </button>
+        )}
+      </div>
 
       {/* CAPAS OSCURAS */}
       <div className="pointer-events-none absolute inset-0 bg-black/50" />
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          bg-gradient-to-b
-          from-black/75
-          via-black/20
-          to-black
-        "
-      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/75 via-black/20 to-black" />
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          bg-gradient-to-r
-          from-black/80
-          via-black/20
-          to-black/55
-        "
-      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-black/55" />
 
-      {/* EFECTOS SOLO EN COMPUTADORA */}
+      {/* EFECTOS EN COMPUTADORA */}
       <motion.div
         aria-hidden="true"
         animate={
@@ -92,62 +242,6 @@ export default function Hero() {
           bg-red-700/20
           blur-[140px]
           md:block
-        "
-      />
-
-      <motion.div
-        aria-hidden="true"
-        animate={
-          reducirMovimiento
-            ? undefined
-            : {
-                opacity: [0.15, 0.3, 0.15],
-                scale: [1.1, 0.95, 1.1],
-              }
-        }
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="
-          pointer-events-none
-          absolute
-          -right-48
-          bottom-0
-          hidden
-          h-[520px]
-          w-[520px]
-          rounded-full
-          bg-red-900/20
-          blur-[150px]
-          md:block
-        "
-      />
-
-      {/* LÍNEA DECORATIVA */}
-      <motion.div
-        initial={{
-          width: 0,
-          opacity: 0,
-        }}
-        animate={{
-          width: "100%",
-          opacity: 1,
-        }}
-        transition={{
-          duration: reducirMovimiento ? 0 : 1.2,
-        }}
-        className="
-          pointer-events-none
-          absolute
-          left-0
-          top-20
-          h-px
-          bg-gradient-to-r
-          from-transparent
-          via-red-600/70
-          to-transparent
         "
       />
 
@@ -181,7 +275,6 @@ export default function Hero() {
           }}
           transition={{
             duration: reducirMovimiento ? 0 : 0.7,
-            delay: reducirMovimiento ? 0 : 0.15,
           }}
           className="
             mb-5
@@ -202,16 +295,7 @@ export default function Hero() {
             className="text-red-500"
           />
 
-          <span
-            className="
-              text-[9px]
-              font-black
-              uppercase
-              tracking-[0.25em]
-              text-zinc-300
-              sm:text-xs
-            "
-          >
+          <span className="text-[9px] font-black uppercase tracking-[0.25em] text-zinc-300 sm:text-xs">
             AlfStore Streetwear
           </span>
         </motion.div>
@@ -227,15 +311,14 @@ export default function Hero() {
           }}
           transition={{
             duration: reducirMovimiento ? 0 : 0.85,
-            delay: reducirMovimiento ? 0 : 0.3,
-            ease: [0.22, 1, 0.36, 1],
+            delay: reducirMovimiento ? 0 : 0.2,
           }}
           className="
             max-w-5xl
-            text-5xl
+            text-4xl
             font-black
             uppercase
-            leading-[0.88]
+            leading-[0.9]
             tracking-[-0.06em]
             text-white
             sm:text-6xl
@@ -246,28 +329,9 @@ export default function Hero() {
         >
           Del caos nace
 
-          <motion.span
-            initial={{
-              opacity: 0,
-              x: reducirMovimiento ? 0 : -35,
-            }}
-            animate={{
-              opacity: 1,
-              x: 0,
-            }}
-            transition={{
-              duration: reducirMovimiento ? 0 : 0.7,
-              delay: reducirMovimiento ? 0 : 0.65,
-            }}
-            className="
-              mt-1
-              block
-              text-red-600
-              drop-shadow-[0_0_30px_rgba(220,38,38,0.3)]
-            "
-          >
+          <span className="mt-1 block text-red-600 drop-shadow-[0_0_30px_rgba(220,38,38,0.3)]">
             el carácter
-          </motion.span>
+          </span>
         </motion.h1>
 
         <motion.p
@@ -281,7 +345,7 @@ export default function Hero() {
           }}
           transition={{
             duration: reducirMovimiento ? 0 : 0.7,
-            delay: reducirMovimiento ? 0 : 0.85,
+            delay: reducirMovimiento ? 0 : 0.5,
           }}
           className="
             mt-7
@@ -310,7 +374,7 @@ export default function Hero() {
           }}
           transition={{
             duration: reducirMovimiento ? 0 : 0.7,
-            delay: reducirMovimiento ? 0 : 1,
+            delay: reducirMovimiento ? 0 : 0.7,
           }}
           className="
             mt-9
@@ -323,18 +387,8 @@ export default function Hero() {
             sm:flex-row
           "
         >
-          <motion.a
+          <a
             href="#catalogo"
-            whileHover={
-              reducirMovimiento
-                ? undefined
-                : { scale: 1.03 }
-            }
-            whileTap={
-              reducirMovimiento
-                ? undefined
-                : { scale: 0.97 }
-            }
             className="
               group
               flex
@@ -352,7 +406,6 @@ export default function Hero() {
               uppercase
               tracking-[0.14em]
               text-white
-              shadow-[0_0_30px_rgba(185,28,28,0.3)]
               transition
               hover:bg-red-600
               sm:w-auto
@@ -362,26 +415,12 @@ export default function Hero() {
 
             <ArrowRight
               size={18}
-              className="
-                transition-transform
-                duration-300
-                group-hover:translate-x-1
-              "
+              className="transition-transform group-hover:translate-x-1"
             />
-          </motion.a>
+          </a>
 
-          <motion.a
+          <a
             href="#historia"
-            whileHover={
-              reducirMovimiento
-                ? undefined
-                : { scale: 1.03 }
-            }
-            whileTap={
-              reducirMovimiento
-                ? undefined
-                : { scale: 0.97 }
-            }
             className="
               flex
               min-h-12
@@ -401,56 +440,18 @@ export default function Hero() {
               text-white
               backdrop-blur-md
               transition
-              hover:border-white
               hover:bg-white
               hover:text-black
               sm:w-auto
             "
           >
             Nuestra historia
-          </motion.a>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{
-            duration: reducirMovimiento ? 0 : 0.8,
-            delay: reducirMovimiento ? 0 : 1.2,
-          }}
-          className="
-            mt-9
-            flex
-            items-center
-            gap-3
-          "
-        >
-          <span className="h-px w-10 bg-red-600" />
-
-          <p
-            className="
-              text-[9px]
-              font-black
-              uppercase
-              tracking-[0.3em]
-              text-zinc-500
-            "
-          >
-            Not for everyone
-          </p>
+          </a>
         </motion.div>
       </div>
 
-      {/* INDICADOR INFERIOR */}
-      <motion.a
+      <a
         href="#catalogo"
-        aria-label="Ir al catálogo"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          duration: reducirMovimiento ? 0 : 0.7,
-          delay: reducirMovimiento ? 0 : 1.4,
-        }}
         className="
           absolute
           bottom-4
@@ -463,15 +464,7 @@ export default function Hero() {
           gap-2
         "
       >
-        <span
-          className="
-            text-[8px]
-            font-black
-            uppercase
-            tracking-[0.3em]
-            text-zinc-500
-          "
-        >
+        <span className="text-[8px] font-black uppercase tracking-[0.3em] text-zinc-500">
           Explorar
         </span>
 
@@ -486,25 +479,12 @@ export default function Hero() {
           transition={{
             duration: 1.3,
             repeat: Infinity,
-            ease: "easeInOut",
           }}
-          className="
-            flex
-            h-10
-            w-7
-            items-center
-            justify-center
-            rounded-full
-            border
-            border-white/20
-            bg-black/50
-            text-red-500
-            backdrop-blur-sm
-          "
+          className="flex h-10 w-7 items-center justify-center rounded-full border border-white/20 bg-black/50 text-red-500"
         >
           <ArrowDown size={15} />
         </motion.span>
-      </motion.a>
+      </a>
     </section>
   );
 }

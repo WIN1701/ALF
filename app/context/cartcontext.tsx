@@ -11,7 +11,7 @@ import {
 
 export type Talla = "S" | "M" | "L" | "XL";
 
-export interface ProductoBase {
+export interface ProductoParaCarrito {
   id: number;
   imagen: string;
 }
@@ -29,7 +29,7 @@ interface CartContextType {
   cantidadTotal: number;
 
   agregarAlCarrito: (
-    producto: ProductoBase,
+    producto: ProductoParaCarrito,
     talla: Talla
   ) => void;
 
@@ -72,7 +72,10 @@ export function CartProvider({
     useState(false);
 
   const agregarAlCarrito = useCallback(
-    (producto: ProductoBase, talla: Talla) => {
+    (
+      producto: ProductoParaCarrito,
+      talla: Talla
+    ) => {
       setCarrito((carritoAnterior) => {
         const productoExistente =
           carritoAnterior.find(
@@ -82,19 +85,15 @@ export function CartProvider({
           );
 
         if (productoExistente) {
-          return carritoAnterior.map((item) => {
-            if (
-              item.id === producto.id &&
-              item.talla === talla
-            ) {
-              return {
-                ...item,
-                cantidad: item.cantidad + 1,
-              };
-            }
-
-            return item;
-          });
+          return carritoAnterior.map((item) =>
+            item.id === producto.id &&
+            item.talla === talla
+              ? {
+                  ...item,
+                  cantidad: item.cantidad + 1,
+                }
+              : item
+          );
         }
 
         return [
@@ -129,19 +128,15 @@ export function CartProvider({
   const aumentarCantidad = useCallback(
     (productoId: number, talla: Talla) => {
       setCarrito((carritoAnterior) =>
-        carritoAnterior.map((item) => {
-          if (
-            item.id === productoId &&
-            item.talla === talla
-          ) {
-            return {
-              ...item,
-              cantidad: item.cantidad + 1,
-            };
-          }
-
-          return item;
-        })
+        carritoAnterior.map((item) =>
+          item.id === productoId &&
+          item.talla === talla
+            ? {
+                ...item,
+                cantidad: item.cantidad + 1,
+              }
+            : item
+        )
       );
     },
     []
@@ -151,19 +146,15 @@ export function CartProvider({
     (productoId: number, talla: Talla) => {
       setCarrito((carritoAnterior) =>
         carritoAnterior
-          .map((item) => {
-            if (
-              item.id === productoId &&
-              item.talla === talla
-            ) {
-              return {
-                ...item,
-                cantidad: item.cantidad - 1,
-              };
-            }
-
-            return item;
-          })
+          .map((item) =>
+            item.id === productoId &&
+            item.talla === talla
+              ? {
+                  ...item,
+                  cantidad: item.cantidad - 1,
+                }
+              : item
+          )
           .filter((item) => item.cantidad > 0)
       );
     },
@@ -184,8 +175,7 @@ export function CartProvider({
 
   const cantidadTotal = useMemo(() => {
     return carrito.reduce(
-      (total, producto) =>
-        total + producto.cantidad,
+      (total, item) => total + item.cantidad,
       0
     );
   }, [carrito]);

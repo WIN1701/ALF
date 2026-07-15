@@ -1,113 +1,69 @@
 import {
-  ShieldCheck,
-  Shirt,
+  MessageCircle,
+  Ruler,
   Sparkles,
-  Truck,
 } from "lucide-react";
 
 const beneficios = [
   {
-    titulo: "Envíos nacionales",
+    titulo: "Tallas oversize",
     descripcion:
-      "Realizamos entregas en diferentes zonas de El Salvador.",
-    icono: Truck,
+      "Disponibles en S, M, L y XL para encontrar tu estilo ideal.",
+    Icono: Ruler,
   },
   {
-    titulo: "Calidad premium",
+    titulo: "Atención directa",
     descripcion:
-      "Prendas seleccionadas para ofrecer comodidad, resistencia y buen acabado.",
-    icono: ShieldCheck,
-  },
-  {
-    titulo: "Estilo oversize",
-    descripcion:
-      "Diseños urbanos disponibles en tallas S, M, L y XL.",
-    icono: Shirt,
+      "Envía tu pedido por WhatsApp con talla, cantidad e imagen.",
+    Icono: MessageCircle,
   },
   {
     titulo: "Diseños exclusivos",
     descripcion:
-      "Colecciones limitadas creadas para quienes buscan una identidad diferente.",
-    icono: Sparkles,
+      "Una colección urbana creada para destacar y construir identidad.",
+    Icono: Sparkles,
   },
 ];
 
 export default function Beneficios() {
   return (
-    <section
-      id="beneficios"
-      className="overflow-hidden bg-zinc-950 px-4 py-20 sm:px-6 sm:py-28"
-    >
-      <div className="mx-auto w-full max-w-7xl">
-        {/* Encabezado */}
-
-        <div className="mx-auto mb-14 max-w-3xl text-center">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-red-600">
-            Por qué elegirnos
+    <section className="bg-[#050505] px-5 py-20 text-white sm:px-8 lg:py-28">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 text-center">
+          <p className="mb-3 text-xs font-black uppercase tracking-[0.3em] text-red-600">
+            AlfStore
           </p>
 
-          <h2 className="mt-5 break-words text-4xl font-black uppercase leading-tight text-white sm:text-5xl">
-            Diseñado para quienes
-            <span className="block text-red-600">
-              marcan su propio estilo
-            </span>
+          <h2 className="text-3xl font-black uppercase tracking-tight sm:text-5xl">
+            Una experiencia diferente
           </h2>
-
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
-            AlfStore combina identidad urbana, comodidad y diseños exclusivos
-            para crear prendas que representan carácter.
-          </p>
         </div>
 
-        {/* Tarjetas */}
-
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {beneficios.map((beneficio) => {
-            const Icono = beneficio.icono;
-
-            return (
+        <div className="grid gap-5 md:grid-cols-3">
+          {beneficios.map(
+            ({
+              titulo,
+              descripcion,
+              Icono,
+            }) => (
               <article
-                key={beneficio.titulo}
-                className="group relative min-w-0 overflow-hidden rounded-2xl border border-zinc-800 bg-black p-7 shadow-xl transition duration-300 hover:-translate-y-1 hover:border-red-600/70 hover:shadow-red-950/30"
+                key={titulo}
+                className="rounded-2xl border border-white/10 bg-black p-7 transition hover:border-red-700/50"
               >
-                {/* Iluminación decorativa */}
-
-                <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-red-600/10 blur-3xl transition group-hover:bg-red-600/20" />
-
-                <div className="relative z-10">
-                  {/* Icono */}
-
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-red-600/40 bg-red-600/10 text-red-600 transition group-hover:border-red-600 group-hover:bg-red-600 group-hover:text-white">
-                    <Icono size={27} strokeWidth={2} />
-                  </div>
-
-                  {/* Texto */}
-
-                  <h3 className="mt-6 break-words text-lg font-black uppercase tracking-wider text-white">
-                    {beneficio.titulo}
-                  </h3>
-
-                  <p className="mt-4 break-words text-sm leading-7 text-zinc-500">
-                    {beneficio.descripcion}
-                  </p>
-
-                  <div className="mt-7 h-1 w-10 rounded-full bg-red-600 transition-all duration-300 group-hover:w-20" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-red-800/40 bg-red-950/30 text-red-500">
+                  <Icono size={23} />
                 </div>
+
+                <h3 className="mt-6 text-lg font-black uppercase">
+                  {titulo}
+                </h3>
+
+                <p className="mt-3 text-sm leading-6 text-zinc-500">
+                  {descripcion}
+                </p>
               </article>
-            );
-          })}
-        </div>
-
-        {/* Frase inferior */}
-
-        <div className="mt-14 overflow-hidden rounded-2xl border border-zinc-800 bg-black px-6 py-10 text-center sm:px-10">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-zinc-500">
-            AlfStore Streetwear
-          </p>
-
-          <p className="alfstore-logo mt-5 break-words text-4xl sm:text-5xl">
-            Del caos nace el carácter.
-          </p>
+            )
+          )}
         </div>
       </div>
     </section>

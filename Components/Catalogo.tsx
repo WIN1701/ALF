@@ -24,7 +24,6 @@ import {
 } from "@/app/context/cartcontext";
 
 const tallas: Talla[] = ["S", "M", "L", "XL"];
-
 const PRODUCTOS_POR_PAGINA = 15;
 
 export default function Catalogo() {
@@ -67,12 +66,14 @@ export default function Catalogo() {
   );
 
   useEffect(() => {
+    if (!imagenAmpliada) {
+      return;
+    }
+
     const overflowAnterior =
       document.body.style.overflow;
 
-    if (imagenAmpliada) {
-      document.body.style.overflow = "hidden";
-    }
+    document.body.style.overflow = "hidden";
 
     const cerrarConEscape = (
       evento: KeyboardEvent
@@ -129,10 +130,8 @@ export default function Catalogo() {
     setProductoAgregado(producto.id);
 
     window.setTimeout(() => {
-      setProductoAgregado((productoActual) =>
-        productoActual === producto.id
-          ? null
-          : productoActual
+      setProductoAgregado((actual) =>
+        actual === producto.id ? null : actual
       );
     }, 1200);
 
@@ -169,6 +168,7 @@ export default function Catalogo() {
         id="catalogo"
         className="
           scroll-mt-24
+          overflow-hidden
           bg-black
           px-3
           py-16
@@ -179,69 +179,32 @@ export default function Catalogo() {
         "
       >
         <div className="mx-auto w-full max-w-[1600px]">
-          {/* ENCABEZADO */}
           <div className="mb-10 text-center">
-            <p
-              className="
-                mb-3
-                text-xs
-                font-bold
-                uppercase
-                tracking-[0.35em]
-                text-red-600
-              "
-            >
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-red-600">
               AlfStore
             </p>
 
-            <h2
-              className="
-                text-3xl
-                font-black
-                uppercase
-                tracking-tight
-                sm:text-5xl
-              "
-            >
+            <h2 className="text-3xl font-black uppercase tracking-tight sm:text-5xl">
               Nuestra colección
             </h2>
 
-            <p
-              className="
-                mx-auto
-                mt-4
-                max-w-xl
-                text-sm
-                leading-6
-                text-zinc-400
-                sm:text-base
-              "
-            >
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-zinc-400 sm:text-base">
               Selecciona una talla y agrega la
               camisa al carrito. Presiona la imagen
               para verla ampliada.
             </p>
 
-            <p
-              className="
-                mt-3
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-                text-red-500
-              "
-            >
+            <p className="mt-3 text-xs font-bold uppercase tracking-wider text-red-500">
               Página {paginaActual} de{" "}
               {totalPaginas}
             </p>
           </div>
 
-          {/* CUADRÍCULA DE PRODUCTOS */}
           <div
             className="
               catalogo-grid
               grid
+              w-full
               grid-cols-2
               items-stretch
               gap-3
@@ -271,6 +234,7 @@ export default function Catalogo() {
                   <article
                     key={producto.id}
                     className="
+                      producto-card
                       flex
                       h-full
                       min-w-0
@@ -280,12 +244,8 @@ export default function Catalogo() {
                       border
                       border-white/15
                       bg-[#080808]
-                      transition
-                      duration-300
-                      hover:border-red-700/60
                     "
                   >
-                    {/* IMAGEN */}
                     <button
                       type="button"
                       disabled={imagenConError}
@@ -310,31 +270,10 @@ export default function Catalogo() {
                       aria-label={`Ampliar camisa ${producto.id}`}
                     >
                       {imagenConError ? (
-                        <div
-                          className="
-                            absolute
-                            inset-0
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            gap-3
-                            bg-zinc-950
-                            px-3
-                            text-zinc-600
-                          "
-                        >
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-zinc-950 px-3 text-zinc-600">
                           <ImageOff size={30} />
 
-                          <span
-                            className="
-                              text-center
-                              text-[9px]
-                              font-bold
-                              uppercase
-                              tracking-wider
-                            "
-                          >
+                          <span className="text-center text-[9px] font-bold uppercase tracking-wider">
                             Imagen no disponible
                           </span>
                         </div>
@@ -343,6 +282,10 @@ export default function Catalogo() {
                           src={producto.imagen}
                           alt={`Camisa AlfStore ${producto.id}`}
                           fill
+                          priority={
+                            paginaActual === 1 &&
+                            producto.id <= 4
+                          }
                           quality={70}
                           sizes="
                             (max-width: 640px) 50vw,
@@ -370,109 +313,42 @@ export default function Catalogo() {
 
                       {!imagenConError && (
                         <>
-                          <div
-                            className="
-                              absolute
-                              inset-0
-                              flex
-                              items-center
-                              justify-center
-                              bg-black/0
-                              transition
-                              duration-300
-                              group-hover:bg-black/30
-                            "
-                          >
-                            <span
-                              className="
-                                hidden
-                                items-center
-                                gap-2
-                                rounded-full
-                                border
-                                border-white/30
-                                bg-black/80
-                                px-4
-                                py-2
-                                text-xs
-                                font-bold
-                                uppercase
-                                tracking-wider
-                                text-white
-                                opacity-0
-                                transition
-                                duration-300
-                                group-hover:opacity-100
-                                sm:flex
-                              "
-                            >
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition duration-300 group-hover:bg-black/30">
+                            <span className="hidden items-center gap-2 rounded-full border border-white/30 bg-black/80 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white opacity-0 transition group-hover:opacity-100 sm:flex">
                               <ZoomIn size={17} />
                               Ver camisa
                             </span>
                           </div>
 
-                          <span
-                            className="
-                              absolute
-                              bottom-3
-                              right-3
-                              flex
-                              h-9
-                              w-9
-                              items-center
-                              justify-center
-                              rounded-full
-                              border
-                              border-white/25
-                              bg-black/85
-                              text-white
-                              sm:hidden
-                            "
-                          >
+                          <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-black/85 text-white sm:hidden">
                             <ZoomIn size={18} />
                           </span>
                         </>
                       )}
                     </button>
 
-                    {/* TALLAS Y BOTÓN */}
                     <div
                       className="
                         flex
+                        min-h-[165px]
                         flex-1
                         flex-col
                         border-t
                         border-white/10
                         p-3
+                        sm:min-h-[190px]
                         sm:p-4
                       "
                     >
-                      <p
-                        className="
-                          mb-4
-                          text-center
-                          text-[10px]
-                          font-bold
-                          uppercase
-                          leading-4
-                          tracking-[0.1em]
-                          text-zinc-400
-                          sm:text-xs
-                        "
-                      >
+                      <p className="mb-1 text-center text-[9px] font-bold uppercase tracking-wider text-zinc-600">
+                        Camisa #{producto.id}
+                      </p>
+
+                      <p className="mb-4 text-center text-[10px] font-bold uppercase leading-4 tracking-[0.08em] text-zinc-400 sm:text-xs">
                         Selecciona tu talla
                       </p>
 
-                      {/* TALLAS */}
-                      <div
-                        className="
-                          grid
-                          w-full
-                          grid-cols-4
-                          gap-1.5
-                          sm:gap-2
-                        "
-                      >
+                      <div className="grid w-full grid-cols-4 gap-1.5 sm:gap-2">
                         {tallas.map((talla) => {
                           const seleccionada =
                             tallaElegida === talla;
@@ -498,7 +374,6 @@ export default function Catalogo() {
                                 text-xs
                                 font-semibold
                                 transition
-                                duration-200
                                 sm:text-sm
 
                                 ${
@@ -507,7 +382,6 @@ export default function Catalogo() {
                                     : "border-white/20 bg-transparent text-zinc-400 hover:border-white hover:text-white"
                                 }
                               `}
-                              aria-label={`Seleccionar talla ${talla}`}
                             >
                               {talla}
                             </button>
@@ -515,7 +389,6 @@ export default function Catalogo() {
                         })}
                       </div>
 
-                      {/* BOTÓN CARRITO */}
                       <button
                         type="button"
                         disabled={
@@ -528,7 +401,7 @@ export default function Catalogo() {
                           )
                         }
                         className={`
-                          mt-4
+                          mt-auto
                           flex
                           min-h-11
                           w-full
@@ -537,15 +410,13 @@ export default function Catalogo() {
                           gap-1.5
                           rounded-xl
                           px-2
-                          text-center
                           text-[8px]
                           font-black
                           uppercase
                           leading-4
-                          tracking-[0.03em]
+                          tracking-[0.02em]
                           transition
                           sm:min-h-12
-                          sm:gap-2
                           sm:text-xs
 
                           ${
@@ -557,15 +428,9 @@ export default function Catalogo() {
                         `}
                       >
                         {fueAgregado ? (
-                          <Check
-                            size={16}
-                            className="shrink-0"
-                          />
+                          <Check size={16} />
                         ) : (
-                          <ShoppingBag
-                            size={16}
-                            className="shrink-0"
-                          />
+                          <ShoppingBag size={16} />
                         )}
 
                         <span>
@@ -585,17 +450,7 @@ export default function Catalogo() {
             )}
           </div>
 
-          {/* PAGINACIÓN */}
-          <div
-            className="
-              mt-12
-              flex
-              flex-wrap
-              items-center
-              justify-center
-              gap-2
-            "
-          >
+          <div className="mt-12 flex items-center justify-center gap-2">
             <button
               type="button"
               onClick={() =>
@@ -604,66 +459,50 @@ export default function Catalogo() {
                 )
               }
               disabled={paginaActual === 1}
-              className="
-                flex
-                h-11
-                items-center
-                justify-center
-                gap-1
-                rounded-lg
-                border
-                border-white/15
-                bg-zinc-950
-                px-3
-                text-[10px]
-                font-bold
-                uppercase
-                text-white
-                transition
-                hover:border-red-600
-                hover:bg-red-700
-                disabled:cursor-not-allowed
-                disabled:opacity-30
-              "
+              className="flex h-11 items-center justify-center gap-1 rounded-lg border border-white/15 bg-zinc-950 px-3 text-[10px] font-bold uppercase text-white disabled:opacity-30"
             >
               <ChevronLeft size={17} />
               Anterior
             </button>
 
-            {Array.from(
-              { length: totalPaginas },
-              (_, indice) => indice + 1
-            ).map((pagina) => (
-              <button
-                key={pagina}
-                type="button"
-                onClick={() =>
-                  cambiarPagina(pagina)
-                }
-                className={`
-                  flex
-                  h-11
-                  min-w-10
-                  items-center
-                  justify-center
-                  rounded-lg
-                  border
-                  px-2
-                  text-sm
-                  font-black
-                  transition
-
-                  ${
-                    paginaActual === pagina
-                      ? "border-red-500 bg-red-700 text-white"
-                      : "border-white/15 bg-zinc-950 text-zinc-400 hover:border-white hover:text-white"
+            <div className="hidden flex-wrap items-center justify-center gap-2 sm:flex">
+              {Array.from(
+                { length: totalPaginas },
+                (_, indice) => indice + 1
+              ).map((pagina) => (
+                <button
+                  key={pagina}
+                  type="button"
+                  onClick={() =>
+                    cambiarPagina(pagina)
                   }
-                `}
-                aria-label={`Ir a la página ${pagina}`}
-              >
-                {pagina}
-              </button>
-            ))}
+                  className={`
+                    flex
+                    h-11
+                    min-w-10
+                    items-center
+                    justify-center
+                    rounded-lg
+                    border
+                    px-2
+                    text-sm
+                    font-black
+
+                    ${
+                      paginaActual === pagina
+                        ? "border-red-500 bg-red-700 text-white"
+                        : "border-white/15 bg-zinc-950 text-zinc-400"
+                    }
+                  `}
+                >
+                  {pagina}
+                </button>
+              ))}
+            </div>
+
+            <span className="flex h-11 min-w-16 items-center justify-center rounded-lg border border-red-700/50 bg-red-950/30 px-3 text-xs font-black text-red-400 sm:hidden">
+              {paginaActual}/{totalPaginas}
+            </span>
 
             <button
               type="button"
@@ -675,27 +514,7 @@ export default function Catalogo() {
               disabled={
                 paginaActual === totalPaginas
               }
-              className="
-                flex
-                h-11
-                items-center
-                justify-center
-                gap-1
-                rounded-lg
-                border
-                border-white/15
-                bg-zinc-950
-                px-3
-                text-[10px]
-                font-bold
-                uppercase
-                text-white
-                transition
-                hover:border-red-600
-                hover:bg-red-700
-                disabled:cursor-not-allowed
-                disabled:opacity-30
-              "
+              className="flex h-11 items-center justify-center gap-1 rounded-lg border border-white/15 bg-zinc-950 px-3 text-[10px] font-bold uppercase text-white disabled:opacity-30"
             >
               Siguiente
               <ChevronRight size={17} />
@@ -704,40 +523,17 @@ export default function Catalogo() {
         </div>
       </section>
 
-      {/* IMAGEN AMPLIADA */}
       {imagenAmpliada && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Vista ampliada del producto"
-          className="
-            fixed
-            inset-0
-            z-[9999]
-            flex
-            items-center
-            justify-center
-            bg-black/90
-            px-4
-            py-6
-            backdrop-blur-sm
-          "
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 px-4 py-6 backdrop-blur-sm"
           onClick={() =>
             setImagenAmpliada(null)
           }
         >
           <div
-            className="
-              relative
-              w-full
-              max-w-lg
-              overflow-hidden
-              rounded-2xl
-              border
-              border-white/20
-              bg-[#080808]
-              shadow-2xl
-            "
+            className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/20 bg-[#080808]"
             onClick={(evento) =>
               evento.stopPropagation()
             }
@@ -747,38 +543,12 @@ export default function Catalogo() {
               onClick={() =>
                 setImagenAmpliada(null)
               }
-              className="
-                absolute
-                right-3
-                top-3
-                z-20
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/20
-                bg-black/85
-                text-white
-                transition
-                hover:bg-red-700
-              "
-              aria-label="Cerrar imagen"
+              className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/85 text-white"
             >
               <X size={24} />
             </button>
 
-            <div
-              className="
-                relative
-                h-[70vh]
-                max-h-[680px]
-                w-full
-                bg-black
-              "
-            >
+            <div className="relative h-[70vh] max-h-[680px] w-full bg-black">
               <Image
                 src={imagenAmpliada}
                 alt="Vista ampliada de la camisa"
@@ -786,38 +556,17 @@ export default function Catalogo() {
                 priority
                 quality={85}
                 sizes="(max-width: 640px) 92vw, 520px"
-                className="
-                  object-contain
-                  object-center
-                  p-2
-                "
+                className="object-contain object-center p-2"
               />
             </div>
 
-            <div
-              className="
-                border-t
-                border-white/10
-                px-5
-                py-4
-                text-center
-              "
-            >
-              <p
-                className="
-                  text-sm
-                  font-semibold
-                  uppercase
-                  tracking-[0.18em]
-                  text-white
-                "
-              >
+            <div className="border-t border-white/10 px-5 py-4 text-center">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em]">
                 Vista del producto
               </p>
 
               <p className="mt-1 text-xs text-zinc-500">
-                Presiona fuera de la imagen para
-                cerrar
+                Presiona fuera de la imagen para cerrar
               </p>
             </div>
           </div>

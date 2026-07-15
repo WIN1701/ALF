@@ -5,13 +5,13 @@ export interface Producto {
 
 export const productos: Producto[] = Array.from(
   { length: 170 },
-  (_, indice) => {
+  (_, indice): Producto => {
     const id = indice + 1;
-    const numero = String(id).padStart(3, "0");
+    const numero = id.toString().padStart(3, "0");
     const extension = id <= 4 ? "webp" : "jpg";
 
     return {
-      id,
+      id: id,
       imagen: `/productos/camisa${numero}.${extension}`,
     };
   }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 import {
   Menu,
   ShoppingBag,
@@ -57,8 +56,9 @@ export default function Navbar() {
           className="
             text-2xl
             font-black
-            tracking-tight
+            tracking-[-0.05em]
             text-white
+            sm:text-3xl
           "
         >
           Alf
@@ -70,21 +70,21 @@ export default function Navbar() {
         <nav className="hidden items-center gap-8 md:flex">
           <a
             href="#inicio"
-            className="text-xs font-bold uppercase tracking-wider text-zinc-300 transition hover:text-red-500"
+            className="text-xs font-black uppercase tracking-[0.15em] text-zinc-300 transition hover:text-red-500"
           >
             Inicio
           </a>
 
           <a
             href="#historia"
-            className="text-xs font-bold uppercase tracking-wider text-zinc-300 transition hover:text-red-500"
+            className="text-xs font-black uppercase tracking-[0.15em] text-zinc-300 transition hover:text-red-500"
           >
             Historia
           </a>
 
           <a
             href="#catalogo"
-            className="text-xs font-bold uppercase tracking-wider text-zinc-300 transition hover:text-red-500"
+            className="text-xs font-black uppercase tracking-[0.15em] text-zinc-300 transition hover:text-red-500"
           >
             Colección
           </a>
@@ -187,7 +187,7 @@ export default function Navbar() {
             <a
               href="#inicio"
               onClick={cerrarMenu}
-              className="rounded-lg px-4 py-3 text-sm font-bold uppercase text-zinc-300 hover:bg-zinc-900"
+              className="rounded-xl px-4 py-3 text-sm font-black uppercase tracking-wider text-zinc-300 hover:bg-zinc-900"
             >
               Inicio
             </a>
@@ -195,7 +195,7 @@ export default function Navbar() {
             <a
               href="#historia"
               onClick={cerrarMenu}
-              className="rounded-lg px-4 py-3 text-sm font-bold uppercase text-zinc-300 hover:bg-zinc-900"
+              className="rounded-xl px-4 py-3 text-sm font-black uppercase tracking-wider text-zinc-300 hover:bg-zinc-900"
             >
               Historia
             </a>
@@ -203,7 +203,7 @@ export default function Navbar() {
             <a
               href="#catalogo"
               onClick={cerrarMenu}
-              className="rounded-lg px-4 py-3 text-sm font-bold uppercase text-zinc-300 hover:bg-zinc-900"
+              className="rounded-xl px-4 py-3 text-sm font-black uppercase tracking-wider text-zinc-300 hover:bg-zinc-900"
             >
               Colección
             </a>
