@@ -180,7 +180,7 @@ export function CartProvider({
     );
   }, [carrito]);
 
-  const valorContexto = useMemo(
+  const valorContexto = useMemo<CartContextType>(
     () => ({
       carrito,
       carritoAbierto,
@@ -214,7 +214,7 @@ export function CartProvider({
   );
 }
 
-export function useCart() {
+export function useCart(): CartContextType {
   const contexto = useContext(CartContext);
 
   if (!contexto) {
