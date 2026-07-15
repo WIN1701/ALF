@@ -1,37 +1,61 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  background-color: #000000;
-  color: #ffffff;
+  --alf-black: #000000;
+  --alf-dark: #070707;
+  --alf-card: #0b0b0b;
+  --alf-red: #ef101c;
+  --alf-red-dark: #7f0710;
+  --alf-white: #ffffff;
+  --alf-gray: #b4b4b8;
 }
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
 }
 
 html {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
   scroll-behavior: smooth;
-  background-color: #000000;
+  background: var(--alf-black);
 }
 
 body {
-  margin: 0;
   width: 100%;
-  min-height: 100vh;
+  max-width: 100%;
+  min-height: 100%;
+  margin: 0;
   overflow-x: hidden;
-  background-color: #000000;
-  color: #ffffff;
+  background: var(--alf-black);
+  color: var(--alf-white);
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+body,
 button,
-a {
-  -webkit-tap-highlight-color: transparent;
+a,
+input,
+textarea,
+select {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
-button {
-  font-family: inherit;
+main {
+  width: 100%;
+  max-width: 100%;
 }
 
 img,
@@ -41,154 +65,208 @@ video {
 }
 
 video {
-  background-color: #000000;
+  background: #000000;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 ::selection {
-  background-color: #b91c1c;
-  color: #ffffff;
+  background: var(--alf-red);
+  color: white;
 }
 
-/* CUADRÍCULA DEL CATÁLOGO */
+/* Fondo general más vivo y urbano */
+.alf-page {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      circle at 8% 15%,
+      rgba(239, 16, 28, 0.12),
+      transparent 28rem
+    ),
+    radial-gradient(
+      circle at 92% 48%,
+      rgba(160, 0, 12, 0.1),
+      transparent 32rem
+    ),
+    linear-gradient(
+      180deg,
+      #000000 0%,
+      #050505 45%,
+      #000000 100%
+    );
+}
 
+.urban-section {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.018) 25%,
+      transparent 25%
+    ),
+    linear-gradient(
+      225deg,
+      rgba(255, 255, 255, 0.012) 25%,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(239, 16, 28, 0.1),
+      transparent 24rem
+    ),
+    #020202;
+  background-size:
+    28px 28px,
+    28px 28px,
+    auto,
+    auto;
+}
+
+/* Video visible y con color */
+.hero-video {
+  opacity: 0.96;
+  object-position: center center;
+}
+
+/* Cuadrícula urbana encima del video */
+.urban-grid {
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.07) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.07) 1px,
+      transparent 1px
+    );
+  background-size: 42px 42px;
+}
+
+/* Letras principales con más fuerza */
+.hero-title {
+  text-shadow:
+    0 4px 0 rgba(0, 0, 0, 0.8),
+    0 10px 35px rgba(0, 0, 0, 0.95),
+    0 0 28px rgba(239, 16, 28, 0.16);
+}
+
+.hero-copy {
+  animation: aparecerAlf 700ms ease-out both;
+}
+
+@keyframes aparecerAlf {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Catálogo estable para Chrome, Samsung,
+   Firefox, Edge y navegadores internos */
 .catalogo-grid {
-  display: grid;
+  position: relative;
+  isolation: isolate;
   width: 100%;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 12px;
 }
 
 .producto-card {
-  display: flex;
-  width: 100%;
-  min-width: 0;
-  height: 100%;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid rgb(255 255 255 / 15%);
-  border-radius: 16px;
-  background-color: #080808;
-}
-
-/*
-  CONTENEDOR FIJO:
-  evita que la imagen crezca o se estire.
-*/
-
-.producto-media {
   position: relative;
-  display: block;
-  width: 100%;
+  isolation: isolate;
   min-width: 0;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border: 0;
-  padding: 0;
-  background-color: #050505;
+  contain: layout paint;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.025),
+      transparent 45%
+    ),
+    #070707;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+  will-change: auto !important;
 }
 
-/*
-  IMAGEN ORIGINAL SIN OPTIMIZADOR,
-  SIN TRANSFORMACIONES Y SIN DEFORMACIÓN.
-*/
-
-.producto-foto {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  object-fit: contain;
-  object-position: center;
-  image-rendering: auto;
-  transform: none;
+.producto-card:hover {
+  border-color: rgba(
+    239,
+    16,
+    28,
+    0.75
+  );
 }
 
-/* IMAGEN AMPLIADA */
-
-.modal-producto {
-  display: flex;
-  width: 100%;
-  height: min(72dvh, 680px);
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background-color: #000000;
-}
-
-.modal-producto-foto {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  image-rendering: auto;
-  transform: none;
-}
-
-/* TABLET */
-
-@media (min-width: 640px) {
-  .catalogo-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
-    gap: 20px;
+/* Ayuda a que el navegador no dibuje
+   las 120 tarjetas al mismo tiempo */
+@supports (content-visibility: auto) {
+  .producto-card {
+    content-visibility: auto;
+    contain-intrinsic-size: 560px;
   }
 }
 
-/* COMPUTADORA */
+/* Scrollbar urbana */
+::-webkit-scrollbar {
+  width: 9px;
+}
 
-@media (min-width: 1024px) {
-  .catalogo-grid {
-    grid-template-columns:
-      repeat(4, minmax(0, 1fr));
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid #050505;
+  border-radius: 999px;
+  background: #5f0a10;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--alf-red);
+}
+
+/* Celulares */
+@media (max-width: 767px) {
+  .hero-video {
+    object-position: 55% center;
+  }
+
+  .hero-title {
+    text-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.9),
+      0 8px 22px rgba(0, 0, 0, 0.95);
+  }
+
+  .producto-card {
+    transition: border-color 160ms ease;
+  }
+
+  .producto-card * {
+    animation: none !important;
   }
 }
 
-/* COMPUTADORA GRANDE */
-
-@media (min-width: 1280px) {
-  .catalogo-grid {
-    grid-template-columns:
-      repeat(5, minmax(0, 1fr));
-  }
-}
-
-/*
-  CELULAR EN MODO SITIO DE COMPUTADORA.
-*/
-
-@media (pointer: coarse) and (max-width: 1100px) {
-  .catalogo-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr)) !important;
-    gap: 12px !important;
-  }
-}
-
-@media (max-width: 350px) {
-  .catalogo-grid {
-    gap: 8px;
-  }
-}
-
-/* REDUCE EFECTOS PESADOS EN TELÉFONOS */
-
-@media (pointer: coarse) {
-  .producto-foto,
-  .modal-producto-foto {
-    transform: none !important;
-    transition: none !important;
-    filter: none !important;
-  }
-}
-
-/* REDUCIR ANIMACIONES */
-
-@media (prefers-reduced-motion: reduce) {
+/* Personas que desactivan animaciones */
+@media (
+  prefers-reduced-motion: reduce
+) {
   html {
     scroll-behavior: auto;
   }
@@ -196,7 +274,6 @@ video {
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

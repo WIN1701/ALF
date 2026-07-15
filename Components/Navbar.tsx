@@ -1,215 +1,268 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   Menu,
   ShoppingBag,
   X,
 } from "lucide-react";
 
+import Carrito from "@/Components/carrito";
 import { useCart } from "@/app/context/cartcontext";
+
+const enlaces = [
+  {
+    nombre: "Inicio",
+    href: "#inicio",
+  },
+  {
+    nombre: "Historia",
+    href: "#historia",
+  },
+  {
+    nombre: "Catálogo",
+    href: "#catalogo",
+  },
+  {
+    nombre: "Beneficios",
+    href: "#beneficios",
+  },
+  {
+    nombre: "Contacto",
+    href: "#contacto",
+  },
+];
 
 export default function Navbar() {
   const [menuAbierto, setMenuAbierto] =
     useState(false);
 
-  const {
-    cantidadTotal,
-    abrirCarrito,
-  } = useCart();
+  const [carritoAbierto, setCarritoAbierto] =
+    useState(false);
 
-  const cerrarMenu = () => {
-    setMenuAbierto(false);
-  };
+  const { totalArticulos } = useCart();
+
+  /*
+   * Cierra el menú móvil cuando la pantalla
+   * cambia al tamaño de computadora.
+   */
+  useEffect(() => {
+    const revisarPantalla = () => {
+      if (window.innerWidth >= 1024) {
+        setMenuAbierto(false);
+      }
+    };
+
+    window.addEventListener(
+      "resize",
+      revisarPantalla
+    );
+
+    return () => {
+      window.removeEventListener(
+        "resize",
+        revisarPantalla
+      );
+    };
+  }, []);
+
+  /*
+   * Evita que la página se mueva cuando
+   * el menú móvil está abierto.
+   */
+  useEffect(() => {
+    if (!menuAbierto) {
+      return;
+    }
+
+    const overflowAnterior =
+      document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow =
+        overflowAnterior;
+    };
+  }, [menuAbierto]);
 
   return (
-    <header
-      className="
-        fixed
-        left-0
-        top-0
-        z-[1000]
-        w-full
-        border-b
-        border-white/10
-        bg-black/90
-        text-white
-        backdrop-blur-xl
-      "
-    >
-      <div
-        className="
-          mx-auto
-          flex
-          h-20
-          max-w-7xl
-          items-center
-          justify-between
-          px-4
-          sm:px-6
-          lg:px-8
-        "
-      >
-        <a
-          href="#inicio"
-          onClick={cerrarMenu}
-          className="
-            text-2xl
-            font-black
-            tracking-[-0.05em]
-            text-white
-            sm:text-3xl
-          "
-        >
-          Alf
-          <span className="text-red-600">
-            Store
-          </span>
-        </a>
+    <>
+      <header className="sticky top-0 z-[100] w-full border-b border-red-950 bg-black">
+        {/* Línea roja superior */}
+        <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-red-600 to-transparent" />
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <div className="relative mx-auto flex min-h-[92px] w-full max-w-[1700px] items-center justify-between px-4 sm:px-6 lg:px-10">
+          {/* Luz urbana detrás del logo */}
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-72 bg-gradient-to-r from-red-950/30 to-transparent" />
+
+          {/* LOGO */}
           <a
             href="#inicio"
-            className="text-xs font-black uppercase tracking-[0.15em] text-zinc-300 transition hover:text-red-500"
-          >
-            Inicio
-          </a>
-
-          <a
-            href="#historia"
-            className="text-xs font-black uppercase tracking-[0.15em] text-zinc-300 transition hover:text-red-500"
-          >
-            Historia
-          </a>
-
-          <a
-            href="#catalogo"
-            className="text-xs font-black uppercase tracking-[0.15em] text-zinc-300 transition hover:text-red-500"
-          >
-            Colección
-          </a>
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={abrirCarrito}
-            className="
-              relative
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-white/15
-              bg-zinc-950
-              text-white
-              transition
-              hover:border-red-600
-              hover:bg-red-700
-            "
-            aria-label="Abrir carrito"
-          >
-            <ShoppingBag size={22} />
-
-            {cantidadTotal > 0 && (
-              <span
-                className="
-                  absolute
-                  -right-1
-                  -top-1
-                  flex
-                  h-5
-                  min-w-5
-                  items-center
-                  justify-center
-                  rounded-full
-                  bg-red-600
-                  px-1
-                  text-[10px]
-                  font-black
-                  text-white
-                "
-              >
-                {cantidadTotal > 99
-                  ? "99+"
-                  : cantidadTotal}
-              </span>
-            )}
-          </button>
-
-          <button
-            type="button"
+            aria-label="Ir al inicio de AlfStore"
+            className="relative z-10 flex min-h-[65px] items-center"
             onClick={() =>
-              setMenuAbierto(
-                (estadoActual) =>
-                  !estadoActual
-              )
+              setMenuAbierto(false)
             }
-            className="
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-white/15
-              bg-zinc-950
-              text-white
-              md:hidden
-            "
-            aria-label="Abrir menú"
           >
-            {menuAbierto ? (
-              <X size={23} />
-            ) : (
-              <Menu size={23} />
-            )}
-          </button>
-        </div>
-      </div>
+            <Image
+              src="/logo.png.jpeg"
+              alt="Logo oficial de AlfStore"
+              width={250}
+              height={100}
+              priority
+              className="h-auto w-[155px] object-contain drop-shadow-[0_0_16px_rgba(220,38,38,0.35)] sm:w-[190px] lg:w-[220px]"
+            />
+          </a>
 
-      {menuAbierto && (
-        <nav
-          className="
-            border-t
-            border-white/10
-            bg-black
-            px-5
-            py-5
-            md:hidden
-          "
-        >
-          <div className="flex flex-col gap-2">
-            <a
-              href="#inicio"
-              onClick={cerrarMenu}
-              className="rounded-xl px-4 py-3 text-sm font-black uppercase tracking-wider text-zinc-300 hover:bg-zinc-900"
-            >
-              Inicio
-            </a>
+          {/* MENÚ DE COMPUTADORA */}
+          <nav
+            className="relative z-10 hidden items-center gap-8 lg:flex"
+            aria-label="Navegación principal"
+          >
+            {enlaces.map((enlace) => (
+              <a
+                key={enlace.nombre}
+                href={enlace.href}
+                className="group relative py-4 text-xs font-black uppercase tracking-[0.18em] text-zinc-200 transition-colors duration-200 hover:text-white"
+              >
+                {enlace.nombre}
 
-            <a
-              href="#historia"
-              onClick={cerrarMenu}
-              className="rounded-xl px-4 py-3 text-sm font-black uppercase tracking-wider text-zinc-300 hover:bg-zinc-900"
-            >
-              Historia
-            </a>
+                <span className="absolute bottom-2 left-0 h-[2px] w-0 bg-red-600 transition-all duration-200 group-hover:w-full" />
+              </a>
+            ))}
+          </nav>
 
-            <a
-              href="#catalogo"
-              onClick={cerrarMenu}
-              className="rounded-xl px-4 py-3 text-sm font-black uppercase tracking-wider text-zinc-300 hover:bg-zinc-900"
+          {/* BOTONES DERECHOS */}
+          <div className="relative z-10 flex items-center gap-3">
+            {/* CARRITO */}
+            <button
+              type="button"
+              onClick={() =>
+                setCarritoAbierto(true)
+              }
+              aria-label={`Abrir carrito. ${totalArticulos} productos`}
+              className="relative flex h-14 w-14 items-center justify-center rounded-full border border-zinc-700 bg-[#080808] text-white transition-colors duration-200 hover:border-red-500 hover:bg-red-950/30 hover:text-red-500 sm:h-16 sm:w-16"
             >
-              Colección
-            </a>
+              <ShoppingBag
+                size={27}
+                strokeWidth={2}
+              />
+
+              {totalArticulos > 0 && (
+                <span className="absolute -right-1 -top-1 flex min-h-6 min-w-6 items-center justify-center rounded-full border-2 border-black bg-red-600 px-1 text-[10px] font-black text-white">
+                  {totalArticulos > 99
+                    ? "99+"
+                    : totalArticulos}
+                </span>
+              )}
+            </button>
+
+            {/* BOTÓN MENÚ MÓVIL */}
+            <button
+              type="button"
+              onClick={() =>
+                setMenuAbierto(
+                  (estadoActual) =>
+                    !estadoActual
+                )
+              }
+              aria-expanded={menuAbierto}
+              aria-controls="menu-movil"
+              aria-label={
+                menuAbierto
+                  ? "Cerrar menú"
+                  : "Abrir menú"
+              }
+              className="flex h-14 w-14 items-center justify-center rounded-full border border-zinc-700 bg-[#080808] text-white transition-colors duration-200 hover:border-red-500 hover:bg-red-950/30 hover:text-red-500 sm:h-16 sm:w-16 lg:hidden"
+            >
+              {menuAbierto ? (
+                <X
+                  size={30}
+                  strokeWidth={2}
+                />
+              ) : (
+                <Menu
+                  size={32}
+                  strokeWidth={2}
+                />
+              )}
+            </button>
           </div>
-        </nav>
-      )}
-    </header>
+        </div>
+
+        {/* MENÚ PARA CELULARES */}
+        {menuAbierto && (
+          <div
+            id="menu-movil"
+            className="fixed inset-x-0 bottom-0 top-[94px] z-[110] bg-black lg:hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-black to-black" />
+
+            {/* Marca de agua */}
+            <div className="pointer-events-none absolute bottom-8 right-[-45px] select-none text-[110px] font-black uppercase leading-none tracking-[-0.1em] text-white/[0.025]">
+              ALF
+            </div>
+
+            <nav
+              className="relative z-10 flex h-full flex-col px-5 pb-8 pt-7"
+              aria-label="Menú móvil"
+            >
+              <p className="mb-6 text-[10px] font-black uppercase tracking-[0.35em] text-red-500">
+                Navegación AlfStore
+              </p>
+
+              <div className="space-y-2">
+                {enlaces.map(
+                  (enlace, posicion) => (
+                    <a
+                      key={enlace.nombre}
+                      href={enlace.href}
+                      onClick={() =>
+                        setMenuAbierto(false)
+                      }
+                      className="group flex items-center justify-between rounded-2xl border border-zinc-900 bg-[#070707] px-5 py-5 transition-colors duration-200 hover:border-red-900 hover:bg-red-950/20"
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className="text-xs font-black text-red-600">
+                          0{posicion + 1}
+                        </span>
+
+                        <span className="text-lg font-black uppercase tracking-[0.1em] text-white">
+                          {enlace.nombre}
+                        </span>
+                      </div>
+
+                      <span className="text-xl font-black text-zinc-700 transition-colors group-hover:text-red-500">
+                        →
+                      </span>
+                    </a>
+                  )
+                )}
+              </div>
+
+              <div className="mt-auto border-t border-zinc-900 pt-6">
+                <p className="text-xs font-black uppercase tracking-[0.24em] text-white">
+                  No hacemos ropa.
+                </p>
+
+                <p className="mt-2 text-xs font-black uppercase tracking-[0.24em] text-red-500">
+                  Creamos identidad.
+                </p>
+              </div>
+            </nav>
+          </div>
+        )}
+      </header>
+
+      {/* CARRITO LATERAL */}
+      <Carrito
+        abierto={carritoAbierto}
+        cerrar={() =>
+          setCarritoAbierto(false)
+        }
+      />
+    </>
   );
 }
