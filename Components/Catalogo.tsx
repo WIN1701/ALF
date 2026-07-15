@@ -1,216 +1,394 @@
 "use client";
 
-import { useState } from "react";
-import { ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { ShoppingBag, X, ZoomIn } from "lucide-react";
 import { productos } from "@/data/productos";
-import { useCart } from "@/app/context/cartcontext";
-import ImagenProducto from "@/Components/imagenproducto";
 
-const tallas = ["S", "M", "L", "XL"];
-const PRODUCTOS_POR_PAGINA = 20;
+type Talla = "S" | "M" | "L" | "XL";
+
+const tallas: Talla[] = ["S", "M", "L", "XL"];
 
 export default function Catalogo() {
-  const { agregarAlCarrito } = useCart();
-
-  const [tallasSeleccionadas, setTallasSeleccionadas] = useState<
-    Record<number, string>
-  >({});
-
-  const [paginaActual, setPaginaActual] = useState(1);
-  const [ultimoAgregado, setUltimoAgregado] = useState<string | null>(null);
-
-  const primerIndice = (paginaActual - 1) * PRODUCTOS_POR_PAGINA;
-  const ultimoIndice = primerIndice + PRODUCTOS_POR_PAGINA;
-
-  const productosActuales = productos.slice(primerIndice, ultimoIndice);
-
-  const totalPaginas = Math.ceil(
-    productos.length / PRODUCTOS_POR_PAGINA
+  const [imagenAmpliada, setImagenAmpliada] = useState<string | null>(
+    null
   );
 
-  const seleccionarTalla = (productoId: number, talla: string) => {
-    setTallasSeleccionadas((estadoActual) => ({
-      ...estadoActual,
-      [productoId]: talla,
+  const [tallasSeleccionadas, setTallasSeleccionadas] = useState<
+    Record<string, Talla>
+  >({});
+
+  /* BLOQUEA EL MOVIMIENTO DE LA PÁGINA
+     CUANDO LA IMAGEN ESTÁ ABIERTA */
+  useEffect(() => {
+    if (imagenAmpliada) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    const cerrarConEscape = (evento: KeyboardEvent) => {
+      if (evento.key === "Escape") {
+        setImagenAmpliada(null);
+      }
+    };
+
+    window.addEventListener("keydown", cerrarConEscape);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, [imagenAmpliada]);
+
+  const seleccionarTalla = (
+    productoId: string | number,
+    talla: Talla
+  ) => {
+    setTallasSeleccionadas((anteriores) => ({
+      ...anteriores,
+      [String(productoId)]: talla,
     }));
   };
 
-  const agregarProducto = (
-    producto: (typeof productos)[number]
-  ) => {
-    const talla = tallasSeleccionadas[producto.id];
-
-    if (!talla) {
-      return;
-    }
-
-    agregarAlCarrito({
-      id: producto.id,
-      imagen: producto.imagen,
-      talla,
-      cantidad: 1,
-    });
-
-    const identificador = `${producto.id}-${talla}`;
-
-    setUltimoAgregado(identificador);
-
-    window.setTimeout(() => {
-      setUltimoAgregado((actual) =>
-        actual === identificador ? null : actual
-      );
-    }, 1200);
-  };
-
-  const cambiarPagina = (nuevaPagina: number) => {
-    setPaginaActual(nuevaPagina);
-
-    document.getElementById("catalogo")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
-
   return (
-    <section
-      id="catalogo"
-      className="scroll-mt-24 overflow-hidden bg-black px-4 py-20 sm:px-6 sm:py-28"
-    >
-      <div className="mx-auto w-full max-w-7xl">
-        <div className="mb-14 text-center">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-red-600">
-            Catálogo
-          </p>
+    <>
+      <section
+        id="catalogo"
+        className="min-h-screen bg-black px-4 py-16 text-white sm:px-6 lg:px-8"
+      >
+        <div className="mx-auto max-w-[1600px]">
+          {/* TÍTULO */}
+          <div className="mb-10 text-center">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-red-600">
+              AlfStore
+            </p>
 
-          <h2 className="mt-4 text-4xl font-black uppercase text-white sm:text-5xl">
-            Colección
-          </h2>
+            <h2 className="text-3xl font-black uppercase tracking-tight sm:text-5xl">
+              Nuestra colección
+            </h2>
 
-          <p className="mt-4 text-sm text-zinc-500">
-            Streetwear • Oversize • Tallas S, M, L y XL
-          </p>
-        </div>
+            <p className="mx-auto mt-4 max-w-xl text-sm text-zinc-400 sm:text-base">
+              Presiona una camisa para verla en tamaño ampliado.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {productosActuales.map((producto) => {
-            const tallaSeleccionada =
-              tallasSeleccionadas[producto.id];
-
-            const productoAgregado =
-              ultimoAgregado ===
-              `${producto.id}-${tallaSeleccionada}`;
-
-            return (
-              <article
-                key={producto.id}
-                className="group min-w-0 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 transition duration-300 hover:-translate-y-1 hover:border-red-600/70 hover:shadow-2xl hover:shadow-red-950/30"
-              >
-                <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-900">
-                  <ImagenProducto
-                    src={producto.imagen}
-                    alt={`Camisa AlfStore ${producto.id}`}
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                  />
-                </div>
-
-                <div className="p-3 sm:p-4">
-                  <p className="mb-3 text-center text-[10px] font-black uppercase tracking-widest text-zinc-500">
-                    Selecciona tu talla
-                  </p>
-
-                  <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-                    {tallas.map((talla) => {
-                      const seleccionada =
-                        tallaSeleccionada === talla;
-
-                      return (
-                        <button
-                          type="button"
-                          key={talla}
-                          aria-label={`Seleccionar talla ${talla}`}
-                          aria-pressed={seleccionada}
-                          onClick={() =>
-                            seleccionarTalla(producto.id, talla)
-                          }
-                          className={`flex aspect-square items-center justify-center rounded-full border text-[11px] font-black transition sm:text-xs ${
-                            seleccionada
-                              ? "border-red-600 bg-red-600 text-white"
-                              : "border-zinc-700 text-zinc-400 hover:border-red-600 hover:text-white"
-                          }`}
-                        >
-                          {talla}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <button
-                    type="button"
-                    disabled={!tallaSeleccionada}
-                    onClick={() => agregarProducto(producto)}
-                    className={`mt-4 flex w-full items-center justify-center gap-2 rounded-lg px-2 py-3 text-[10px] font-black uppercase tracking-wider transition sm:text-xs ${
-                      tallaSeleccionada
-                        ? "bg-red-600 text-white hover:bg-red-700"
-                        : "cursor-not-allowed bg-zinc-800 text-zinc-500"
-                    }`}
-                  >
-                    <ShoppingBag size={16} />
-
-                    {productoAgregado
-                      ? "Agregado"
-                      : tallaSeleccionada
-                        ? "Agregar"
-                        : "Elige talla"}
-                  </button>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-        {totalPaginas > 1 && (
-          <div className="mt-14 flex flex-wrap justify-center gap-2">
-            <button
-              type="button"
-              disabled={paginaActual === 1}
-              onClick={() => cambiarPagina(paginaActual - 1)}
-              className="rounded-lg bg-zinc-900 px-4 py-3 text-xs font-black uppercase text-zinc-300 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Anterior
-            </button>
-
-            {Array.from({ length: totalPaginas }).map((_, index) => {
-              const numeroPagina = index + 1;
-              const paginaActiva = paginaActual === numeroPagina;
+          {/* PRODUCTOS */}
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-4
+              sm:grid-cols-3
+              lg:grid-cols-4
+              xl:grid-cols-5
+            "
+          >
+            {productos.map((producto) => {
+              const productoId = String(producto.id);
+              const tallaElegida =
+                tallasSeleccionadas[productoId];
 
               return (
-                <button
-                  type="button"
-                  key={numeroPagina}
-                  onClick={() => cambiarPagina(numeroPagina)}
-                  className={`flex h-11 min-w-11 items-center justify-center rounded-lg px-3 text-sm font-black transition ${
-                    paginaActiva
-                      ? "bg-red-600 text-white"
-                      : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white"
-                  }`}
+                <article
+                  key={producto.id}
+                  className="
+                    overflow-hidden
+                    rounded-2xl
+                    border
+                    border-white/15
+                    bg-[#080808]
+                    transition
+                    duration-300
+                    hover:border-red-700/60
+                  "
                 >
-                  {numeroPagina}
-                </button>
+                  {/* IMAGEN DEL PRODUCTO */}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setImagenAmpliada(producto.imagen)
+                    }
+                    className="
+                      group
+                      relative
+                      block
+                      aspect-[4/5]
+                      w-full
+                      cursor-zoom-in
+                      overflow-hidden
+                      bg-black
+                    "
+                    aria-label="Ampliar imagen de la camisa"
+                  >
+                    <Image
+                      src={producto.imagen}
+                      alt="Camisa AlfStore"
+                      fill
+                      sizes="
+                        (max-width: 640px) 50vw,
+                        (max-width: 1024px) 33vw,
+                        (max-width: 1280px) 25vw,
+                        20vw
+                      "
+                      className="
+                        object-cover
+                        transition-transform
+                        duration-500
+                        group-hover:scale-105
+                      "
+                    />
+
+                    {/* OSCURECIDO AL PASAR EL MOUSE */}
+                    <div
+                      className="
+                        absolute
+                        inset-0
+                        flex
+                        items-center
+                        justify-center
+                        bg-black/0
+                        transition
+                        duration-300
+                        group-hover:bg-black/30
+                      "
+                    >
+                      <div
+                        className="
+                          hidden
+                          items-center
+                          gap-2
+                          rounded-full
+                          border
+                          border-white/30
+                          bg-black/80
+                          px-4
+                          py-2
+                          text-xs
+                          font-bold
+                          uppercase
+                          tracking-wider
+                          text-white
+                          opacity-0
+                          transition
+                          duration-300
+                          group-hover:opacity-100
+                          sm:flex
+                        "
+                      >
+                        <ZoomIn size={17} />
+
+                        Ver camisa
+                      </div>
+                    </div>
+
+                    {/* ICONO VISIBLE EN CELULAR */}
+                    <span
+                      className="
+                        absolute
+                        bottom-3
+                        right-3
+                        flex
+                        h-9
+                        w-9
+                        items-center
+                        justify-center
+                        rounded-full
+                        border
+                        border-white/20
+                        bg-black/80
+                        text-white
+                        sm:hidden
+                      "
+                    >
+                      <ZoomIn size={18} />
+                    </span>
+                  </button>
+
+                  {/* TALLAS */}
+                  <div className="p-4 sm:p-5">
+                    <p
+                      className="
+                        mb-4
+                        text-center
+                        text-[11px]
+                        font-bold
+                        uppercase
+                        tracking-[0.14em]
+                        text-zinc-400
+                        sm:text-sm
+                      "
+                    >
+                      Selecciona tu talla
+                    </p>
+
+                    <div className="grid grid-cols-4 gap-2">
+                      {tallas.map((talla) => {
+                        const seleccionada =
+                          tallaElegida === talla;
+
+                        return (
+                          <button
+                            key={talla}
+                            type="button"
+                            onClick={() =>
+                              seleccionarTalla(
+                                producto.id,
+                                talla
+                              )
+                            }
+                            className={`
+                              flex
+                              aspect-square
+                              items-center
+                              justify-center
+                              rounded-full
+                              border
+                              text-sm
+                              font-semibold
+                              transition
+                              duration-200
+                              sm:text-base
+
+                              ${
+                                seleccionada
+                                  ? "border-red-600 bg-red-700 text-white"
+                                  : "border-white/20 bg-transparent text-zinc-400 hover:border-white hover:text-white"
+                              }
+                            `}
+                            aria-label={`Seleccionar talla ${talla}`}
+                          >
+                            {talla}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* BOTÓN DEL PRODUCTO */}
+                    <button
+                      type="button"
+                      disabled={!tallaElegida}
+                      className={`
+                        mt-5
+                        flex
+                        min-h-12
+                        w-full
+                        items-center
+                        justify-center
+                        gap-2
+                        rounded-xl
+                        px-3
+                        text-xs
+                        font-bold
+                        uppercase
+                        tracking-[0.08em]
+                        transition
+                        sm:text-sm
+
+                        ${
+                          tallaElegida
+                            ? "cursor-pointer bg-red-700 text-white hover:bg-red-600 active:scale-[0.98]"
+                            : "cursor-not-allowed bg-zinc-800 text-zinc-500"
+                        }
+                      `}
+                    >
+                      <ShoppingBag size={19} />
+
+                      {tallaElegida
+                        ? `Talla ${tallaElegida} seleccionada`
+                        : "Elige talla"}
+                    </button>
+                  </div>
+                </article>
               );
             })}
+          </div>
+        </div>
+      </section>
 
+      {/* VENTANA CON LA IMAGEN AMPLIADA */}
+      {imagenAmpliada && (
+        <div
+          className="
+            fixed
+            inset-0
+            z-[9999]
+            flex
+            items-center
+            justify-center
+            bg-black/90
+            px-4
+            py-6
+            backdrop-blur-sm
+          "
+          onClick={() => setImagenAmpliada(null)}
+        >
+          <div
+            className="
+              relative
+              w-full
+              max-w-lg
+              overflow-hidden
+              rounded-2xl
+              border
+              border-white/20
+              bg-[#080808]
+              shadow-2xl
+            "
+            onClick={(evento) => evento.stopPropagation()}
+          >
+            {/* BOTÓN CERRAR */}
             <button
               type="button"
-              disabled={paginaActual === totalPaginas}
-              onClick={() => cambiarPagina(paginaActual + 1)}
-              className="rounded-lg bg-zinc-900 px-4 py-3 text-xs font-black uppercase text-zinc-300 transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
+              onClick={() => setImagenAmpliada(null)}
+              className="
+                absolute
+                right-3
+                top-3
+                z-20
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-white/20
+                bg-black/80
+                text-white
+                transition
+                hover:bg-red-700
+              "
+              aria-label="Cerrar imagen"
             >
-              Siguiente
+              <X size={24} />
             </button>
+
+            {/* IMAGEN GRANDE */}
+            <div className="relative h-[70vh] max-h-[680px] w-full">
+              <Image
+                src={imagenAmpliada}
+                alt="Vista ampliada de la camisa"
+                fill
+                priority
+                sizes="(max-width: 640px) 92vw, 520px"
+                className="object-contain"
+              />
+            </div>
+
+            {/* TEXTO INFERIOR */}
+            <div className="border-t border-white/10 px-5 py-4 text-center">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
+                Vista del producto
+              </p>
+
+              <p className="mt-1 text-xs text-zinc-500">
+                Presiona fuera de la imagen para cerrar
+              </p>
+            </div>
           </div>
-        )}
-      </div>
-    </section>
+        </div>
+      )}
+    </>
   );
 }
