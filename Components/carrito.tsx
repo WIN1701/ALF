@@ -1,53 +1,42 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
+
 import {
-  MessageCircle,
   Minus,
   Plus,
+  ShoppingBag,
   Trash2,
   X,
 } from "lucide-react";
+
 import { useCart } from "@/app/context/cartcontext";
-import ImagenProducto from "@/Components/imagenproducto";
 
-interface CarritoProps {
-  abierto: boolean;
-  cerrar: () => void;
-}
-
-export default function Carrito({
-  abierto,
-  cerrar,
-}: CarritoProps) {
+export default function Carrito() {
   const {
     carrito,
+    carritoAbierto,
+    cantidadTotal,
+    cerrarCarrito,
     eliminarDelCarrito,
     aumentarCantidad,
     disminuirCantidad,
     vaciarCarrito,
   } = useCart();
 
-  const totalArticulos = carrito.reduce(
-    (total, producto) => total + producto.cantidad,
-    0
-  );
-
   useEffect(() => {
-    if (!abierto) {
-      return;
+    if (carritoAbierto) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
-
-    const desplazamientoAnterior =
-      document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
 
     const cerrarConEscape = (
       evento: KeyboardEvent
     ) => {
       if (evento.key === "Escape") {
-        cerrar();
+        cerrarCarrito();
       }
     };
 
@@ -57,281 +46,371 @@ export default function Carrito({
     );
 
     return () => {
-      document.body.style.overflow =
-        desplazamientoAnterior;
+      document.body.style.overflow = "";
 
       window.removeEventListener(
         "keydown",
         cerrarConEscape
       );
     };
-  }, [abierto, cerrar]);
+  }, [carritoAbierto, cerrarCarrito]);
 
-  const finalizarPorWhatsApp = () => {
-    if (carrito.length === 0) {
-      return;
-    }
-
-    const detalleDelPedido = carrito
-      .map((producto) => {
-        const numeroProducto = String(
-          producto.id
-        ).padStart(3, "0");
-
-        const enlaceImagen = new URL(
-          producto.imagen,
-          window.location.origin
-        ).href;
-
-        return [
-          `🛍️ Camisa #${numeroProducto}`,
-          `📏 Talla: ${producto.talla}`,
-          `🔢 Cantidad: ${producto.cantidad}`,
-          `🖼️ Ver imagen: ${enlaceImagen}`,
-        ].join("\n");
-      })
-      .join("\n\n────────────────────\n\n");
-
-    const mensaje = [
-      "Hola AlfStore, quiero realizar el siguiente pedido:",
-      "",
-      detalleDelPedido,
-      "",
-      `Total de prendas: ${totalArticulos}`,
-      "",
-      "Por favor, confírmame la disponibilidad.",
-    ].join("\n");
-
-    const enlaceWhatsApp =
-      `https://wa.me/50360197818?text=${encodeURIComponent(
-        mensaje
-      )}`;
-
-    window.open(
-      enlaceWhatsApp,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
-  if (!abierto) {
+  if (!carritoAbierto) {
     return null;
   }
 
   return (
     <div
-      className="fixed inset-0 z-[100]"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Carrito de compras"
+      className="
+        fixed
+        inset-0
+        z-[10000]
+        bg-black/75
+        backdrop-blur-sm
+      "
+      onClick={cerrarCarrito}
     >
-      {/* Fondo oscuro */}
-
-      <button
-        type="button"
-        onClick={cerrar}
-        aria-label="Cerrar carrito"
-        className="absolute inset-0 h-full w-full bg-black/80 backdrop-blur-sm"
-      />
-
-      {/* Panel lateral */}
-
-      <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-zinc-800 bg-zinc-950 shadow-2xl">
-        {/* Encabezado */}
-
-        <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-5">
+      <aside
+        role="dialog"
+        aria-modal="true"
+        aria-label="Carrito de compras"
+        className="
+          absolute
+          right-0
+          top-0
+          flex
+          h-full
+          w-full
+          max-w-md
+          flex-col
+          border-l
+          border-white/10
+          bg-[#080808]
+          text-white
+          shadow-2xl
+        "
+        onClick={(evento) =>
+          evento.stopPropagation()
+        }
+      >
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-white/10
+            px-5
+            py-5
+          "
+        >
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.25em] text-red-600">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-red-600">
               AlfStore
             </p>
 
-            <h2 className="mt-1 text-xl font-black uppercase tracking-wider text-white">
-              Mi carrito
+            <h2 className="mt-1 flex items-center gap-2 text-xl font-black uppercase">
+              <ShoppingBag size={22} />
+              Tu carrito
             </h2>
-
-            <p className="mt-1 text-xs text-zinc-500">
-              {totalArticulos}{" "}
-              {totalArticulos === 1
-                ? "prenda"
-                : "prendas"}
-            </p>
           </div>
 
           <button
             type="button"
-            onClick={cerrar}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-800 text-white transition hover:border-red-600 hover:text-red-500"
+            onClick={cerrarCarrito}
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-white/15
+              bg-black
+              text-white
+              transition
+              hover:border-red-500
+              hover:bg-red-700
+            "
             aria-label="Cerrar carrito"
           >
-            <X size={22} />
+            <X size={23} />
           </button>
         </div>
 
-        {/* Productos */}
-
-        <div className="flex-1 overflow-y-auto px-4 py-5 sm:px-5">
+        <div className="flex-1 overflow-y-auto px-4 py-5">
           {carrito.length === 0 ? (
-            <div className="flex min-h-[350px] flex-col items-center justify-center px-6 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full border border-zinc-800 bg-black">
-                <span className="text-4xl">
-                  🛍️
-                </span>
+            <div
+              className="
+                flex
+                h-full
+                min-h-72
+                flex-col
+                items-center
+                justify-center
+                px-6
+                text-center
+              "
+            >
+              <div
+                className="
+                  flex
+                  h-20
+                  w-20
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-white/10
+                  bg-zinc-950
+                  text-zinc-500
+                "
+              >
+                <ShoppingBag size={34} />
               </div>
 
-              <h3 className="mt-6 text-lg font-black uppercase text-white">
+              <h3 className="mt-5 text-lg font-black uppercase">
                 Tu carrito está vacío
               </h3>
 
-              <p className="mt-3 max-w-xs text-sm leading-7 text-zinc-500">
-                Selecciona una talla en el catálogo
-                y presiona el botón para agregar la
-                camisa.
+              <p className="mt-2 max-w-xs text-sm leading-6 text-zinc-500">
+                Selecciona una talla y presiona
+                Agregar al carrito.
               </p>
 
               <button
                 type="button"
-                onClick={cerrar}
-                className="mt-7 rounded-lg bg-red-600 px-6 py-3 text-xs font-black uppercase tracking-wider text-white transition hover:bg-red-700"
+                onClick={cerrarCarrito}
+                className="
+                  mt-6
+                  rounded-lg
+                  bg-red-700
+                  px-6
+                  py-3
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-wider
+                  text-white
+                  transition
+                  hover:bg-red-600
+                "
               >
                 Ver colección
               </button>
             </div>
           ) : (
             <div className="space-y-4">
-              {carrito.map((producto) => {
-                const numeroProducto = String(
-                  producto.id
-                ).padStart(3, "0");
-
-                return (
-                  <article
-                    key={`${producto.id}-${producto.talla}`}
-                    className="flex min-w-0 gap-3 overflow-hidden rounded-xl border border-zinc-800 bg-black p-3 sm:gap-4"
+              {carrito.map((item) => (
+                <article
+                  key={`${item.id}-${item.talla}`}
+                  className="
+                    flex
+                    gap-4
+                    rounded-xl
+                    border
+                    border-white/10
+                    bg-zinc-950
+                    p-3
+                  "
+                >
+                  <div
+                    className="
+                      relative
+                      h-28
+                      w-24
+                      shrink-0
+                      overflow-hidden
+                      rounded-lg
+                      bg-black
+                    "
                   >
-                    {/* Imagen */}
+                    <Image
+                      src={item.imagen}
+                      alt={`Camisa AlfStore ${item.id}`}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
+                  </div>
 
-                    <div className="relative h-28 w-24 shrink-0 overflow-hidden rounded-lg bg-zinc-900">
-                      <ImagenProducto
-                        src={producto.imagen}
-                        alt={`Camisa AlfStore ${numeroProducto}`}
-                        sizes="96px"
-                        className="object-cover"
-                      />
+                  <div className="flex min-w-0 flex-1 flex-col justify-between">
+                    <div>
+                      <p className="text-sm font-black uppercase">
+                        Camisa #{item.id}
+                      </p>
+
+                      <p className="mt-1 text-xs uppercase tracking-wider text-zinc-400">
+                        Talla:{" "}
+                        <span className="font-bold text-red-500">
+                          {item.talla}
+                        </span>
+                      </p>
                     </div>
 
-                    {/* Información */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div
+                        className="
+                          flex
+                          items-center
+                          overflow-hidden
+                          rounded-lg
+                          border
+                          border-white/15
+                        "
+                      >
+                        <button
+                          type="button"
+                          onClick={() =>
+                            disminuirCantidad(
+                              item.id,
+                              item.talla
+                            )
+                          }
+                          className="
+                            flex
+                            h-9
+                            w-9
+                            items-center
+                            justify-center
+                            text-zinc-300
+                            transition
+                            hover:bg-white/10
+                            hover:text-white
+                          "
+                          aria-label="Disminuir cantidad"
+                        >
+                          <Minus size={16} />
+                        </button>
 
-                    <div className="flex min-w-0 flex-1 flex-col justify-between">
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-black uppercase text-white">
-                          Camisa #
-                          {numeroProducto}
-                        </p>
-
-                        <p className="mt-2 text-xs font-bold uppercase tracking-wider text-zinc-500">
-                          Talla:{" "}
-                          <span className="text-red-500">
-                            {producto.talla}
-                          </span>
-                        </p>
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between gap-2">
-                        {/* Cantidad */}
-
-                        <div className="flex items-center overflow-hidden rounded-full border border-zinc-700 bg-zinc-950">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              disminuirCantidad(
-                                producto.id,
-                                producto.talla
-                              )
-                            }
-                            className="flex h-9 w-9 items-center justify-center text-zinc-300 transition hover:bg-zinc-800 hover:text-red-500"
-                            aria-label="Disminuir cantidad"
-                          >
-                            <Minus size={15} />
-                          </button>
-
-                          <span className="flex h-9 min-w-8 items-center justify-center text-sm font-black text-white">
-                            {producto.cantidad}
-                          </span>
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              aumentarCantidad(
-                                producto.id,
-                                producto.talla
-                              )
-                            }
-                            className="flex h-9 w-9 items-center justify-center text-zinc-300 transition hover:bg-zinc-800 hover:text-red-500"
-                            aria-label="Aumentar cantidad"
-                          >
-                            <Plus size={15} />
-                          </button>
-                        </div>
-
-                        {/* Eliminar */}
+                        <span
+                          className="
+                            flex
+                            h-9
+                            min-w-9
+                            items-center
+                            justify-center
+                            border-x
+                            border-white/15
+                            px-2
+                            text-sm
+                            font-bold
+                          "
+                        >
+                          {item.cantidad}
+                        </span>
 
                         <button
                           type="button"
                           onClick={() =>
-                            eliminarDelCarrito(
-                              producto.id,
-                              producto.talla
+                            aumentarCantidad(
+                              item.id,
+                              item.talla
                             )
                           }
-                          className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-800 text-zinc-500 transition hover:border-red-600 hover:text-red-500"
-                          aria-label={`Eliminar camisa ${numeroProducto}`}
+                          className="
+                            flex
+                            h-9
+                            w-9
+                            items-center
+                            justify-center
+                            text-zinc-300
+                            transition
+                            hover:bg-white/10
+                            hover:text-white
+                          "
+                          aria-label="Aumentar cantidad"
                         >
-                          <Trash2 size={17} />
+                          <Plus size={16} />
                         </button>
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          eliminarDelCarrito(
+                            item.id,
+                            item.talla
+                          )
+                        }
+                        className="
+                          flex
+                          h-9
+                          w-9
+                          items-center
+                          justify-center
+                          rounded-lg
+                          border
+                          border-red-900/50
+                          bg-red-950/30
+                          text-red-500
+                          transition
+                          hover:bg-red-700
+                          hover:text-white
+                        "
+                        aria-label="Eliminar producto"
+                      >
+                        <Trash2 size={17} />
+                      </button>
                     </div>
-                  </article>
-                );
-              })}
+                  </div>
+                </article>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Parte inferior */}
-
-        <div className="border-t border-zinc-800 bg-black/70 p-5">
-          {carrito.length > 0 && (
-            <>
-              <div className="mb-5 flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-zinc-500">
-                  Total de prendas
-                </span>
-
-                <span className="text-xl font-black text-white">
-                  {totalArticulos}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={vaciarCarrito}
-                className="mb-4 w-full text-center text-xs font-black uppercase tracking-wider text-zinc-500 transition hover:text-red-500"
-              >
-                Vaciar carrito
-              </button>
-            </>
-          )}
-
-          <button
-            type="button"
-            onClick={finalizarPorWhatsApp}
-            disabled={carrito.length === 0}
-            className="flex w-full items-center justify-center gap-3 rounded-lg bg-green-600 px-5 py-4 text-xs font-black uppercase tracking-wider text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-500"
+        {carrito.length > 0 && (
+          <div
+            className="
+              border-t
+              border-white/10
+              bg-black
+              px-5
+              py-5
+            "
           >
-            <MessageCircle size={20} />
-            Pedir por WhatsApp
-          </button>
-        </div>
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-sm uppercase tracking-wider text-zinc-400">
+                Total de productos
+              </span>
+
+              <span className="text-xl font-black text-white">
+                {cantidadTotal}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={vaciarCarrito}
+              className="
+                flex
+                min-h-11
+                w-full
+                items-center
+                justify-center
+                gap-2
+                rounded-lg
+                border
+                border-white/15
+                bg-zinc-950
+                px-4
+                text-xs
+                font-bold
+                uppercase
+                tracking-wider
+                text-zinc-300
+                transition
+                hover:border-red-700
+                hover:text-white
+              "
+            >
+              <Trash2 size={17} />
+              Vaciar carrito
+            </button>
+          </div>
+        )}
       </aside>
     </div>
   );

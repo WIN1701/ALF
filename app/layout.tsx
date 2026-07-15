@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { CartProvider } from "@/app/context/cartcontext";
+
 import "./globals.css";
 
+import { CartProvider } from "@/app/context/cartcontext";
+import Carrito from "@/Components/carrito";
+
 export const metadata: Metadata = {
-  title: "AlfStore | Streetwear",
+  title: "AlfStore",
   description:
-    "AlfStore: streetwear salvadoreño. Del caos nace el carácter.",
+    "AlfStore Streetwear. Del caos nace el carácter.",
 };
 
 interface RootLayoutProps {
@@ -15,11 +18,14 @@ interface RootLayoutProps {
 
 export default function RootLayout({
   children,
-}: Readonly<RootLayoutProps>) {
+}: RootLayoutProps) {
   return (
     <html lang="es">
-      <body>
-        <CartProvider>{children}</CartProvider>
+      <body className="bg-black text-white">
+        <CartProvider>
+          {children}
+          <Carrito />
+        </CartProvider>
       </body>
     </html>
   );

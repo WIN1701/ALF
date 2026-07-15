@@ -2,199 +2,223 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
-  useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
 
-export interface CartItem {
+export type Talla = "S" | "M" | "L" | "XL";
+
+export interface ProductoBase {
   id: number;
   imagen: string;
-  talla: string;
+}
+
+export interface ProductoCarrito {
+  id: number;
+  imagen: string;
+  talla: Talla;
   cantidad: number;
 }
 
 interface CartContextType {
-  carrito: CartItem[];
-  agregarAlCarrito: (producto: CartItem) => void;
-  eliminarDelCarrito: (id: number, talla: string) => void;
-  aumentarCantidad: (id: number, talla: string) => void;
-  disminuirCantidad: (id: number, talla: string) => void;
+  carrito: ProductoCarrito[];
+  carritoAbierto: boolean;
+  cantidadTotal: number;
+
+  agregarAlCarrito: (
+    producto: ProductoBase,
+    talla: Talla
+  ) => void;
+
+  eliminarDelCarrito: (
+    productoId: number,
+    talla: Talla
+  ) => void;
+
+  aumentarCantidad: (
+    productoId: number,
+    talla: Talla
+  ) => void;
+
+  disminuirCantidad: (
+    productoId: number,
+    talla: Talla
+  ) => void;
+
+  abrirCarrito: () => void;
+  cerrarCarrito: () => void;
   vaciarCarrito: () => void;
 }
 
-const CartContext = createContext<CartContextType | undefined>(
-  undefined
-);
+const CartContext = createContext<
+  CartContextType | undefined
+>(undefined);
 
 interface CartProviderProps {
   children: ReactNode;
 }
 
-const CLAVE_CARRITO = "alfstore-carrito";
-
 export function CartProvider({
   children,
 }: CartProviderProps) {
-  const [carrito, setCarrito] = useState<CartItem[]>([]);
-  const [carritoCargado, setCarritoCargado] = useState(false);
+  const [carrito, setCarrito] = useState<
+    ProductoCarrito[]
+  >([]);
 
-  /*
-   * Recupera el carrito guardado al abrir la página.
-   */
+  const [carritoAbierto, setCarritoAbierto] =
+    useState(false);
 
-  useEffect(() => {
-    try {
-      const carritoGuardado =
-        window.localStorage.getItem(CLAVE_CARRITO);
+  const agregarAlCarrito = useCallback(
+    (producto: ProductoBase, talla: Talla) => {
+      setCarrito((carritoAnterior) => {
+        const productoExistente =
+          carritoAnterior.find(
+            (item) =>
+              item.id === producto.id &&
+              item.talla === talla
+          );
 
-      if (carritoGuardado) {
-        const productosGuardados =
-          JSON.parse(carritoGuardado) as CartItem[];
+        if (productoExistente) {
+          return carritoAnterior.map((item) => {
+            if (
+              item.id === producto.id &&
+              item.talla === talla
+            ) {
+              return {
+                ...item,
+                cantidad: item.cantidad + 1,
+              };
+            }
 
-        if (Array.isArray(productosGuardados)) {
-          setCarrito(productosGuardados);
+            return item;
+          });
         }
-      }
-    } catch (error) {
-      console.error(
-        "No se pudo recuperar el carrito:",
-        error
+
+        return [
+          ...carritoAnterior,
+          {
+            id: producto.id,
+            imagen: producto.imagen,
+            talla,
+            cantidad: 1,
+          },
+        ];
+      });
+    },
+    []
+  );
+
+  const eliminarDelCarrito = useCallback(
+    (productoId: number, talla: Talla) => {
+      setCarrito((carritoAnterior) =>
+        carritoAnterior.filter(
+          (item) =>
+            !(
+              item.id === productoId &&
+              item.talla === talla
+            )
+        )
       );
-    } finally {
-      setCarritoCargado(true);
-    }
+    },
+    []
+  );
+
+  const aumentarCantidad = useCallback(
+    (productoId: number, talla: Talla) => {
+      setCarrito((carritoAnterior) =>
+        carritoAnterior.map((item) => {
+          if (
+            item.id === productoId &&
+            item.talla === talla
+          ) {
+            return {
+              ...item,
+              cantidad: item.cantidad + 1,
+            };
+          }
+
+          return item;
+        })
+      );
+    },
+    []
+  );
+
+  const disminuirCantidad = useCallback(
+    (productoId: number, talla: Talla) => {
+      setCarrito((carritoAnterior) =>
+        carritoAnterior
+          .map((item) => {
+            if (
+              item.id === productoId &&
+              item.talla === talla
+            ) {
+              return {
+                ...item,
+                cantidad: item.cantidad - 1,
+              };
+            }
+
+            return item;
+          })
+          .filter((item) => item.cantidad > 0)
+      );
+    },
+    []
+  );
+
+  const abrirCarrito = useCallback(() => {
+    setCarritoAbierto(true);
   }, []);
 
-  /*
-   * Guarda automáticamente el carrito cuando cambia.
-   */
+  const cerrarCarrito = useCallback(() => {
+    setCarritoAbierto(false);
+  }, []);
 
-  useEffect(() => {
-    if (!carritoCargado) {
-      return;
-    }
-
-    try {
-      window.localStorage.setItem(
-        CLAVE_CARRITO,
-        JSON.stringify(carrito)
-      );
-    } catch (error) {
-      console.error(
-        "No se pudo guardar el carrito:",
-        error
-      );
-    }
-  }, [carrito, carritoCargado]);
-
-  const agregarAlCarrito = (
-    nuevoProducto: CartItem
-  ) => {
-    setCarrito((carritoActual) => {
-      const productoExistente =
-        carritoActual.find(
-          (producto) =>
-            producto.id === nuevoProducto.id &&
-            producto.talla === nuevoProducto.talla
-        );
-
-      if (productoExistente) {
-        return carritoActual.map((producto) =>
-          producto.id === nuevoProducto.id &&
-          producto.talla === nuevoProducto.talla
-            ? {
-                ...producto,
-                cantidad:
-                  producto.cantidad +
-                  nuevoProducto.cantidad,
-              }
-            : producto
-        );
-      }
-
-      return [...carritoActual, nuevoProducto];
-    });
-  };
-
-  const eliminarDelCarrito = (
-    id: number,
-    talla: string
-  ) => {
-    setCarrito((carritoActual) =>
-      carritoActual.filter(
-        (producto) =>
-          !(
-            producto.id === id &&
-            producto.talla === talla
-          )
-      )
-    );
-  };
-
-  const aumentarCantidad = (
-    id: number,
-    talla: string
-  ) => {
-    setCarrito((carritoActual) =>
-      carritoActual.map((producto) =>
-        producto.id === id &&
-        producto.talla === talla
-          ? {
-              ...producto,
-              cantidad: producto.cantidad + 1,
-            }
-          : producto
-      )
-    );
-  };
-
-  const disminuirCantidad = (
-    id: number,
-    talla: string
-  ) => {
-    setCarrito((carritoActual) =>
-      carritoActual.reduce<CartItem[]>(
-        (resultado, producto) => {
-          const esProductoSeleccionado =
-            producto.id === id &&
-            producto.talla === talla;
-
-          if (!esProductoSeleccionado) {
-            resultado.push(producto);
-            return resultado;
-          }
-
-          if (producto.cantidad > 1) {
-            resultado.push({
-              ...producto,
-              cantidad: producto.cantidad - 1,
-            });
-          }
-
-          return resultado;
-        },
-        []
-      )
-    );
-  };
-
-  const vaciarCarrito = () => {
+  const vaciarCarrito = useCallback(() => {
     setCarrito([]);
-  };
+  }, []);
+
+  const cantidadTotal = useMemo(() => {
+    return carrito.reduce(
+      (total, producto) =>
+        total + producto.cantidad,
+      0
+    );
+  }, [carrito]);
+
+  const valorContexto = useMemo(
+    () => ({
+      carrito,
+      carritoAbierto,
+      cantidadTotal,
+      agregarAlCarrito,
+      eliminarDelCarrito,
+      aumentarCantidad,
+      disminuirCantidad,
+      abrirCarrito,
+      cerrarCarrito,
+      vaciarCarrito,
+    }),
+    [
+      carrito,
+      carritoAbierto,
+      cantidadTotal,
+      agregarAlCarrito,
+      eliminarDelCarrito,
+      aumentarCantidad,
+      disminuirCantidad,
+      abrirCarrito,
+      cerrarCarrito,
+      vaciarCarrito,
+    ]
+  );
 
   return (
-    <CartContext.Provider
-      value={{
-        carrito,
-        agregarAlCarrito,
-        eliminarDelCarrito,
-        aumentarCantidad,
-        disminuirCantidad,
-        vaciarCarrito,
-      }}
-    >
+    <CartContext.Provider value={valorContexto}>
       {children}
     </CartContext.Provider>
   );
@@ -205,7 +229,7 @@ export function useCart() {
 
   if (!contexto) {
     throw new Error(
-      "useCart debe utilizarse dentro de CartProvider."
+      "useCart debe utilizarse dentro de CartProvider"
     );
   }
 
