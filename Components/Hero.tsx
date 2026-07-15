@@ -1,18 +1,31 @@
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import {
+  ArrowDown,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
+
 export default function Hero() {
+  const reducirMovimiento = useReducedMotion();
+
   return (
     <section
       id="inicio"
       className="
         relative
         flex
-        min-h-[560px]
-        h-[75vh]
-        max-h-[800px]
+        min-h-[650px]
+        h-[100svh]
+        max-h-[950px]
         w-full
         items-center
         justify-center
         overflow-hidden
         bg-black
+        pt-20
+        text-white
       "
     >
       {/* VIDEO DE FONDO */}
@@ -22,7 +35,8 @@ export default function Hero() {
         loop
         playsInline
         preload="metadata"
-        poster="/hero.jpg"
+        aria-hidden="true"
+        tabIndex={-1}
         className="
           absolute
           inset-0
@@ -35,21 +49,19 @@ export default function Hero() {
           src="/videos/hero-alfstore.mp4"
           type="video/mp4"
         />
-
-        Tu navegador no puede reproducir este video.
       </video>
 
-      {/* CAPA OSCURA */}
-      <div className="absolute inset-0 bg-black/45" />
+      {/* CAPA OSCURA SOBRE EL VIDEO */}
+      <div className="absolute inset-0 bg-black/55" />
 
-      {/* SOMBRA DESDE ARRIBA */}
+      {/* SOMBRA SUPERIOR E INFERIOR */}
       <div
         className="
           absolute
           inset-0
           bg-gradient-to-b
-          from-black/60
-          via-transparent
+          from-black/80
+          via-black/20
           to-black
         "
       />
@@ -60,13 +72,91 @@ export default function Hero() {
           absolute
           inset-0
           bg-gradient-to-r
-          from-black/70
+          from-black/80
           via-black/20
-          to-black/40
+          to-black/60
         "
       />
 
-      {/* CONTENIDO */}
+      {/* BRILLO ROJO IZQUIERDO */}
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reducirMovimiento
+            ? undefined
+            : {
+                opacity: [0.25, 0.5, 0.25],
+                scale: [1, 1.15, 1],
+              }
+        }
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          pointer-events-none
+          absolute
+          -left-40
+          top-1/3
+          h-[500px]
+          w-[500px]
+          rounded-full
+          bg-red-700/25
+          blur-[140px]
+        "
+      />
+
+      {/* BRILLO ROJO DERECHO */}
+      <motion.div
+        aria-hidden="true"
+        animate={
+          reducirMovimiento
+            ? undefined
+            : {
+                opacity: [0.15, 0.35, 0.15],
+                scale: [1.1, 0.95, 1.1],
+              }
+        }
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="
+          pointer-events-none
+          absolute
+          -right-48
+          bottom-0
+          h-[520px]
+          w-[520px]
+          rounded-full
+          bg-red-900/20
+          blur-[150px]
+        "
+      />
+
+      {/* LÍNEAS DECORATIVAS */}
+      <motion.div
+        initial={{ width: 0, opacity: 0 }}
+        animate={{ width: "100%", opacity: 1 }}
+        transition={{
+          duration: reducirMovimiento ? 0 : 1.4,
+          delay: reducirMovimiento ? 0 : 0.2,
+        }}
+        className="
+          absolute
+          left-0
+          top-20
+          h-px
+          bg-gradient-to-r
+          from-transparent
+          via-red-600/70
+          to-transparent
+        "
+      />
+
+      {/* CONTENIDO PRINCIPAL */}
       <div
         className="
           relative
@@ -77,136 +167,310 @@ export default function Hero() {
           max-w-7xl
           flex-col
           items-center
-          px-6
-          pt-24
+          px-5
           text-center
-          sm:px-10
+          sm:px-8
           lg:items-start
+          lg:px-10
           lg:text-left
         "
       >
-        <p
+        {/* ETIQUETA SUPERIOR */}
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: reducirMovimiento ? 0 : 20,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: reducirMovimiento ? 0 : 0.7,
+            delay: reducirMovimiento ? 0 : 0.2,
+          }}
           className="
-            mb-4
-            text-xs
-            font-bold
-            uppercase
-            tracking-[0.35em]
-            text-red-600
-            sm:text-sm
+            mb-5
+            flex
+            items-center
+            gap-2
+            rounded-full
+            border
+            border-red-600/40
+            bg-black/50
+            px-4
+            py-2
+            backdrop-blur-md
           "
         >
-          AlfStore Streetwear
-        </p>
+          <Sparkles
+            size={14}
+            className="text-red-500"
+          />
 
-        <h1
+          <span
+            className="
+              text-[9px]
+              font-black
+              uppercase
+              tracking-[0.28em]
+              text-zinc-300
+              sm:text-xs
+            "
+          >
+            AlfStore Streetwear
+          </span>
+        </motion.div>
+
+        {/* TÍTULO */}
+        <motion.h1
+          initial={{
+            opacity: 0,
+            y: reducirMovimiento ? 0 : 50,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: reducirMovimiento ? 0 : 0.9,
+            delay: reducirMovimiento ? 0 : 0.35,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="
-            max-w-4xl
-            text-4xl
+            max-w-5xl
+            text-5xl
             font-black
             uppercase
-            leading-[0.95]
-            tracking-tight
+            leading-[0.88]
+            tracking-[-0.06em]
             text-white
             sm:text-6xl
-            lg:text-7xl
-            xl:text-8xl
+            md:text-7xl
+            lg:text-8xl
+            xl:text-9xl
           "
         >
           Del caos nace
-          <span className="block text-red-600">
-            el carácter
-          </span>
-        </h1>
 
-        <p
+          <motion.span
+            initial={{
+              opacity: 0,
+              x: reducirMovimiento ? 0 : -40,
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
+            transition={{
+              duration: reducirMovimiento ? 0 : 0.8,
+              delay: reducirMovimiento ? 0 : 0.75,
+            }}
+            className="
+              mt-1
+              block
+              text-red-600
+              drop-shadow-[0_0_35px_rgba(220,38,38,0.35)]
+            "
+          >
+            el carácter
+          </motion.span>
+        </motion.h1>
+
+        {/* DESCRIPCIÓN */}
+        <motion.p
+          initial={{
+            opacity: 0,
+            y: reducirMovimiento ? 0 : 25,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: reducirMovimiento ? 0 : 0.8,
+            delay: reducirMovimiento ? 0 : 0.95,
+          }}
           className="
-            mt-6
+            mt-7
             max-w-xl
             text-sm
             leading-6
             text-zinc-300
             sm:text-base
+            sm:leading-7
             lg:text-lg
           "
         >
           No hacemos ropa. Creamos identidad.
           Diseños urbanos para quienes no nacieron
           para seguir las reglas.
-        </p>
+        </motion.p>
 
-        <div
+        {/* BOTONES */}
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: reducirMovimiento ? 0 : 25,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: reducirMovimiento ? 0 : 0.8,
+            delay: reducirMovimiento ? 0 : 1.15,
+          }}
           className="
-            mt-8
+            mt-9
             flex
+            w-full
             flex-col
             items-center
             gap-3
+            sm:w-auto
             sm:flex-row
-            lg:justify-start
+            lg:items-start
           "
         >
-          <a
+          <motion.a
             href="#catalogo"
+            whileHover={
+              reducirMovimiento
+                ? undefined
+                : {
+                    scale: 1.04,
+                  }
+            }
+            whileTap={
+              reducirMovimiento
+                ? undefined
+                : {
+                    scale: 0.97,
+                  }
+            }
             className="
-              inline-flex
-              min-h-12
+              group
+              flex
+              min-h-13
+              w-full
               items-center
               justify-center
-              rounded-md
+              gap-3
+              rounded-full
               bg-red-700
               px-8
-              py-3
-              text-sm
+              py-4
+              text-xs
               font-black
               uppercase
-              tracking-[0.12em]
+              tracking-[0.15em]
               text-white
+              shadow-[0_0_35px_rgba(185,28,28,0.3)]
               transition
-              duration-300
               hover:bg-red-600
-              active:scale-95
+              sm:w-auto
             "
           >
             Ver colección
-          </a>
 
-          <a
+            <ArrowRight
+              size={18}
+              className="
+                transition-transform
+                duration-300
+                group-hover:translate-x-1
+              "
+            />
+          </motion.a>
+
+          <motion.a
             href="#historia"
+            whileHover={
+              reducirMovimiento
+                ? undefined
+                : {
+                    scale: 1.04,
+                  }
+            }
+            whileTap={
+              reducirMovimiento
+                ? undefined
+                : {
+                    scale: 0.97,
+                  }
+            }
             className="
-              inline-flex
-              min-h-12
+              flex
+              min-h-13
+              w-full
               items-center
               justify-center
-              rounded-md
+              rounded-full
               border
-              border-white/30
-              bg-black/30
+              border-white/25
+              bg-black/40
               px-8
-              py-3
-              text-sm
-              font-bold
+              py-4
+              text-xs
+              font-black
               uppercase
-              tracking-[0.12em]
+              tracking-[0.15em]
               text-white
-              backdrop-blur-sm
+              backdrop-blur-md
               transition
-              duration-300
               hover:border-white
               hover:bg-white
               hover:text-black
-              active:scale-95
+              sm:w-auto
             "
           >
             Nuestra historia
-          </a>
-        </div>
+          </motion.a>
+        </motion.div>
+
+        {/* FRASE INFERIOR */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            duration: reducirMovimiento ? 0 : 1,
+            delay: reducirMovimiento ? 0 : 1.4,
+          }}
+          className="
+            mt-10
+            flex
+            items-center
+            gap-3
+          "
+        >
+          <span className="h-px w-10 bg-red-600" />
+
+          <p
+            className="
+              text-[9px]
+              font-black
+              uppercase
+              tracking-[0.3em]
+              text-zinc-500
+              sm:text-[10px]
+            "
+          >
+            Not for everyone
+          </p>
+        </motion.div>
       </div>
 
-      {/* INDICADOR INFERIOR */}
-      <a
+      {/* INDICADOR PARA BAJAR */}
+      <motion.a
         href="#catalogo"
-        aria-label="Ir al catálogo"
+        aria-label="Bajar hacia la colección"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: reducirMovimiento ? 0 : 0.8,
+          delay: reducirMovimiento ? 0 : 1.7,
+        }}
         className="
           absolute
           bottom-5
@@ -217,25 +481,52 @@ export default function Hero() {
           flex-col
           items-center
           gap-2
-          text-[10px]
-          font-bold
-          uppercase
-          tracking-[0.25em]
-          text-zinc-400
+          text-center
         "
       >
-        Explorar
-
         <span
           className="
-            h-8
-            w-px
-            bg-gradient-to-b
-            from-red-600
-            to-transparent
+            text-[8px]
+            font-black
+            uppercase
+            tracking-[0.3em]
+            text-zinc-500
+            sm:text-[9px]
           "
-        />
-      </a>
+        >
+          Explorar
+        </span>
+
+        <motion.span
+          animate={
+            reducirMovimiento
+              ? undefined
+              : {
+                  y: [0, 6, 0],
+                }
+          }
+          transition={{
+            duration: 1.3,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="
+            flex
+            h-10
+            w-7
+            items-center
+            justify-center
+            rounded-full
+            border
+            border-white/20
+            bg-black/40
+            text-red-500
+            backdrop-blur-sm
+          "
+        >
+          <ArrowDown size={15} />
+        </motion.span>
+      </motion.a>
     </section>
   );
 }
