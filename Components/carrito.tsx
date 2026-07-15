@@ -26,6 +26,10 @@ export default function Carrito() {
     vaciarCarrito,
   } = useCart();
 
+  /*
+    Bloquea el movimiento de la página
+    cuando el carrito está abierto.
+  */
   useEffect(() => {
     if (carritoAbierto) {
       document.body.style.overflow = "hidden";
@@ -51,28 +55,33 @@ export default function Carrito() {
     };
   }, [carritoAbierto, cerrarCarrito]);
 
+  /*
+    Envía por WhatsApp:
+    - Número de camisa
+    - Talla
+    - Cantidad
+    - Enlace de la imagen
+    - Total de productos
+  */
   const enviarPedidoWhatsApp = () => {
     if (carrito.length === 0) {
       return;
     }
 
     /*
-      NÚMERO DE WHATSAPP:
-      Código de país + número, sin espacios,
-      sin guiones y sin el signo +
+      Número configurado:
+      +503 6019-7818
+
+      Para WhatsApp debe ir:
+      - Sin signo +
+      - Sin espacios
+      - Sin guiones
     */
-    const numeroWhatsApp = "50376356637";
+    const numeroWhatsApp = "50360197818";
 
     const productosDelPedido = carrito
       .map((item, indice) => {
-        /*
-          Cuando la página esté publicada en Vercel,
-          genera el enlace completo de cada imagen.
-        */
-        const enlaceImagen =
-          typeof window !== "undefined"
-            ? `${window.location.origin}${item.imagen}`
-            : item.imagen;
+        const enlaceImagen = `${window.location.origin}${item.imagen}`;
 
         return [
           `*Producto ${indice + 1}*`,
@@ -91,12 +100,12 @@ export default function Carrito() {
       "",
       `*Total de productos: ${cantidadTotal}*`,
       "",
-      "¿Me pueden confirmar disponibilidad y forma de entrega?",
+      "¿Me pueden confirmar disponibilidad, precio y forma de entrega?",
     ].join("\n");
 
-    const enlaceWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(
-      mensaje
-    )}`;
+    const enlaceWhatsApp =
+      `https://wa.me/${numeroWhatsApp}` +
+      `?text=${encodeURIComponent(mensaje)}`;
 
     window.open(
       enlaceWhatsApp,
@@ -139,11 +148,11 @@ export default function Carrito() {
           text-white
           shadow-2xl
         "
-        onClick={(evento) =>
-          evento.stopPropagation()
-        }
+        onClick={(evento) => {
+          evento.stopPropagation();
+        }}
       >
-        {/* ENCABEZADO */}
+        {/* ENCABEZADO DEL CARRITO */}
         <div
           className="
             flex
@@ -180,6 +189,7 @@ export default function Carrito() {
               "
             >
               <ShoppingBag size={22} />
+
               Tu carrito
             </h2>
           </div>
@@ -208,7 +218,7 @@ export default function Carrito() {
           </button>
         </div>
 
-        {/* CONTENIDO */}
+        {/* CONTENIDO DEL CARRITO */}
         <div className="flex-1 overflow-y-auto px-4 py-5">
           {carrito.length === 0 ? (
             <div
@@ -321,7 +331,7 @@ export default function Carrito() {
                     />
                   </div>
 
-                  {/* INFORMACIÓN */}
+                  {/* INFORMACIÓN DEL PRODUCTO */}
                   <div
                     className="
                       flex
@@ -371,7 +381,7 @@ export default function Carrito() {
                         gap-2
                       "
                     >
-                      {/* CANTIDAD */}
+                      {/* CONTROLES DE CANTIDAD */}
                       <div
                         className="
                           flex
@@ -448,7 +458,7 @@ export default function Carrito() {
                         </button>
                       </div>
 
-                      {/* ELIMINAR */}
+                      {/* ELIMINAR PRODUCTO */}
                       <button
                         type="button"
                         onClick={() =>
@@ -484,7 +494,7 @@ export default function Carrito() {
           )}
         </div>
 
-        {/* PARTE INFERIOR */}
+        {/* PARTE INFERIOR DEL CARRITO */}
         {carrito.length > 0 && (
           <div
             className="
@@ -525,7 +535,7 @@ export default function Carrito() {
               </span>
             </div>
 
-            {/* BOTÓN DE WHATSAPP */}
+            {/* ENVIAR POR WHATSAPP */}
             <button
               type="button"
               onClick={enviarPedidoWhatsApp}
@@ -539,6 +549,7 @@ export default function Carrito() {
                 rounded-lg
                 bg-green-600
                 px-4
+                text-center
                 text-xs
                 font-black
                 uppercase
@@ -550,6 +561,7 @@ export default function Carrito() {
               "
             >
               <MessageCircle size={19} />
+
               Enviar pedido por WhatsApp
             </button>
 
@@ -581,6 +593,7 @@ export default function Carrito() {
               "
             >
               <Trash2 size={17} />
+
               Vaciar carrito
             </button>
           </div>
