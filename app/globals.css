@@ -1,9 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-  background: #000000;
+  background-color: #000000;
   color: #ffffff;
 }
 
@@ -13,14 +11,14 @@
 
 html {
   scroll-behavior: smooth;
-  background: #000000;
+  background-color: #000000;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   overflow-x: hidden;
-  background: #000000;
+  background-color: #000000;
   color: #ffffff;
 }
 
@@ -36,46 +34,31 @@ video {
 }
 
 video {
-  background: #000000;
+  background-color: #000000;
 }
 
-/*
-  Celulares táctiles normales.
-  Mantiene dos productos por fila.
-*/
+/* Celulares táctiles */
 @media (pointer: coarse) and (max-width: 640px) {
   .catalogo-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
-/*
-  Celulares en modo "sitio de computadora"
-  y tablets pequeñas.
-*/
+/* Celulares en modo computadora y tablets */
 @media (pointer: coarse) and (min-width: 641px) and (max-width: 1000px) {
   .catalogo-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
-/*
-  Tablets grandes y dispositivos táctiles
-  usando modo escritorio.
-*/
+/* Tablets grandes */
 @media (pointer: coarse) and (min-width: 1001px) and (max-width: 1400px) {
   .catalogo-grid {
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }
 
-/*
-  Reduce animaciones cuando el dispositivo
-  o el usuario así lo solicita.
-*/
+/* Reduce animaciones en dispositivos que lo solicitan */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -84,9 +67,9 @@ video {
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

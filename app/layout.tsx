@@ -21,7 +21,7 @@ export default function RootLayout({
 }: RootLayoutProps) {
   return (
     <html lang="es">
-      <body className="bg-black text-white">
+      <body>
         <CartProvider>
           {children}
           <Carrito />
