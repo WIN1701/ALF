@@ -75,12 +75,10 @@ export default function Catalogo() {
     productoId: number,
     talla: Talla
   ) => {
-    setTallasSeleccionadas(
-      (tallasAnteriores) => ({
-        ...tallasAnteriores,
-        [productoId]: talla,
-      })
-    );
+    setTallasSeleccionadas((anteriores) => ({
+      ...anteriores,
+      [productoId]: talla,
+    }));
   };
 
   const agregarProducto = (
@@ -104,10 +102,8 @@ export default function Catalogo() {
     setProductoAgregado(producto.id);
 
     window.setTimeout(() => {
-      setProductoAgregado((productoActual) =>
-        productoActual === producto.id
-          ? null
-          : productoActual
+      setProductoAgregado((actual) =>
+        actual === producto.id ? null : actual
       );
     }, 1200);
 
@@ -123,37 +119,66 @@ export default function Catalogo() {
         className="
           scroll-mt-24
           bg-black
-          px-3
+          px-4
           py-20
           text-white
           sm:px-6
           lg:px-8
         "
       >
-        <div className="mx-auto max-w-[1600px]">
+        <div className="mx-auto w-full max-w-[1600px]">
+          {/* ENCABEZADO */}
           <div className="mb-10 text-center">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.35em] text-red-600">
+            <p
+              className="
+                mb-3
+                text-xs
+                font-bold
+                uppercase
+                tracking-[0.35em]
+                text-red-600
+              "
+            >
               AlfStore
             </p>
 
-            <h2 className="text-3xl font-black uppercase tracking-tight sm:text-5xl">
+            <h2
+              className="
+                text-3xl
+                font-black
+                uppercase
+                tracking-tight
+                sm:text-5xl
+              "
+            >
               Nuestra colección
             </h2>
 
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-zinc-400 sm:text-base">
+            <p
+              className="
+                mx-auto
+                mt-4
+                max-w-xl
+                text-sm
+                leading-6
+                text-zinc-400
+                sm:text-base
+              "
+            >
               Selecciona una talla y agrega la
               camisa al carrito. Presiona la
               imagen para verla ampliada.
             </p>
           </div>
 
+          {/* CUADRÍCULA */}
           <div
             className="
               grid
-              grid-cols-2
-              gap-3
-              sm:grid-cols-3
-              sm:gap-5
+              grid-cols-1
+              gap-6
+              min-[430px]:grid-cols-2
+              md:grid-cols-3
               lg:grid-cols-4
               xl:grid-cols-5
             "
@@ -171,6 +196,10 @@ export default function Catalogo() {
                 <article
                   key={producto.id}
                   className="
+                    flex
+                    h-full
+                    min-w-0
+                    flex-col
                     overflow-hidden
                     rounded-2xl
                     border
@@ -181,6 +210,7 @@ export default function Catalogo() {
                     hover:border-red-700/60
                   "
                 >
+                  {/* IMAGEN */}
                   <button
                     type="button"
                     onClick={() =>
@@ -194,6 +224,7 @@ export default function Catalogo() {
                       block
                       aspect-[4/5]
                       w-full
+                      shrink-0
                       cursor-zoom-in
                       overflow-hidden
                       bg-black
@@ -205,13 +236,14 @@ export default function Catalogo() {
                       alt={`Camisa AlfStore ${producto.id}`}
                       fill
                       sizes="
-                        (max-width: 640px) 50vw,
-                        (max-width: 1024px) 33vw,
-                        (max-width: 1280px) 25vw,
+                        (max-width: 429px) 92vw,
+                        (max-width: 767px) 48vw,
+                        (max-width: 1023px) 33vw,
+                        (max-width: 1279px) 25vw,
                         20vw
                       "
                       className="
-                        object-cover
+                        object-contain
                         transition-transform
                         duration-500
                         group-hover:scale-105
@@ -228,10 +260,10 @@ export default function Catalogo() {
                         bg-black/0
                         transition
                         duration-300
-                        group-hover:bg-black/35
+                        group-hover:bg-black/30
                       "
                     >
-                      <div
+                      <span
                         className="
                           hidden
                           items-center
@@ -255,8 +287,9 @@ export default function Catalogo() {
                         "
                       >
                         <ZoomIn size={17} />
+
                         Ver camisa
-                      </div>
+                      </span>
                     </div>
 
                     <span
@@ -265,28 +298,36 @@ export default function Catalogo() {
                         bottom-3
                         right-3
                         flex
-                        h-9
-                        w-9
+                        h-10
+                        w-10
                         items-center
                         justify-center
                         rounded-full
                         border
-                        border-white/20
-                        bg-black/80
+                        border-white/25
+                        bg-black/85
                         text-white
                         sm:hidden
                       "
                     >
-                      <ZoomIn size={18} />
+                      <ZoomIn size={19} />
                     </span>
                   </button>
 
-                  <div className="p-3 sm:p-5">
+                  {/* CONTENIDO */}
+                  <div
+                    className="
+                      flex
+                      flex-1
+                      flex-col
+                      p-4
+                    "
+                  >
                     <p
                       className="
                         mb-4
                         text-center
-                        text-[10px]
+                        text-xs
                         font-bold
                         uppercase
                         tracking-[0.12em]
@@ -297,7 +338,8 @@ export default function Catalogo() {
                       Selecciona tu talla
                     </p>
 
-                    <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                    {/* TALLAS */}
+                    <div className="grid grid-cols-4 gap-2">
                       {tallas.map((talla) => {
                         const seleccionada =
                           tallaElegida === talla;
@@ -315,15 +357,15 @@ export default function Catalogo() {
                             className={`
                               flex
                               aspect-square
+                              min-h-10
                               items-center
                               justify-center
                               rounded-full
                               border
-                              text-xs
+                              text-sm
                               font-semibold
                               transition
                               duration-200
-                              sm:text-base
 
                               ${
                                 seleccionada
@@ -339,6 +381,7 @@ export default function Catalogo() {
                       })}
                     </div>
 
+                    {/* AGREGAR AL CARRITO */}
                     <button
                       type="button"
                       disabled={!tallaElegida}
@@ -346,22 +389,21 @@ export default function Catalogo() {
                         agregarProducto(producto)
                       }
                       className={`
-                        mt-4
+                        mt-5
                         flex
-                        min-h-11
+                        min-h-12
                         w-full
                         items-center
                         justify-center
                         gap-2
-                        rounded-lg
-                        px-2
+                        rounded-xl
+                        px-3
                         text-center
-                        text-[9px]
+                        text-xs
                         font-black
                         uppercase
                         tracking-[0.05em]
                         transition
-                        sm:text-xs
 
                         ${
                           tallaElegida
@@ -371,9 +413,9 @@ export default function Catalogo() {
                       `}
                     >
                       {fueAgregado ? (
-                        <Check size={17} />
+                        <Check size={18} />
                       ) : (
-                        <ShoppingBag size={17} />
+                        <ShoppingBag size={18} />
                       )}
 
                       {fueAgregado
@@ -390,6 +432,7 @@ export default function Catalogo() {
         </div>
       </section>
 
+      {/* IMAGEN AMPLIADA */}
       {imagenAmpliada && (
         <div
           role="dialog"
@@ -448,7 +491,6 @@ export default function Catalogo() {
                 bg-black/80
                 text-white
                 transition
-                hover:border-red-500
                 hover:bg-red-700
               "
               aria-label="Cerrar imagen"
@@ -456,7 +498,14 @@ export default function Catalogo() {
               <X size={24} />
             </button>
 
-            <div className="relative h-[70vh] max-h-[680px] w-full">
+            <div
+              className="
+                relative
+                h-[70vh]
+                max-h-[680px]
+                w-full
+              "
+            >
               <Image
                 src={imagenAmpliada}
                 alt="Vista ampliada de la camisa"
@@ -467,8 +516,24 @@ export default function Catalogo() {
               />
             </div>
 
-            <div className="border-t border-white/10 px-5 py-4 text-center">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-white">
+            <div
+              className="
+                border-t
+                border-white/10
+                px-5
+                py-4
+                text-center
+              "
+            >
+              <p
+                className="
+                  text-sm
+                  font-semibold
+                  uppercase
+                  tracking-[0.18em]
+                  text-white
+                "
+              >
                 Vista del producto
               </p>
 
