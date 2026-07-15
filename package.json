@@ -39,5 +39,10 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "postcss": "^8.5.19",
+    "tailwindcss": "^4.3.2"
+  }
 }
