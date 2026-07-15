@@ -1,123 +1,62 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-
+import { useEffect, useRef, useState } from "react";
 import { Play } from "lucide-react";
 
 export default function VideoHero() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [mostrarBoton, setMostrarBoton] = useState(false);
 
-  const [necesitaToque, setNecesitaToque] =
-    useState(false);
-
-  const intentarReproducir = useCallback(async () => {
+  const reproducirVideo = async () => {
     const video = videoRef.current;
 
     if (!video) {
       return;
     }
 
-    /*
-      Importante para celulares y tablets:
-      el video debe permanecer sin sonido.
-    */
     video.muted = true;
     video.defaultMuted = true;
     video.volume = 0;
 
-    video.setAttribute("muted", "");
-    video.setAttribute("playsinline", "");
-    video.setAttribute(
-      "webkit-playsinline",
-      "true"
-    );
-
     try {
       await video.play();
-      setNecesitaToque(false);
+      setMostrarBoton(false);
     } catch {
-      /*
-        Cuando el navegador bloquea la reproducción
-        automática, aparece un botón para iniciarla.
-      */
-      setNecesitaToque(true);
+      setMostrarBoton(true);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    const reproducirAlInteractuar = () => {
-      void intentarReproducir();
-    };
-
-    const reproducirAlRegresar = () => {
-      if (document.visibilityState === "visible") {
-        void intentarReproducir();
-      }
-    };
-
-    /*
-      Primer intento automático.
-    */
     const temporizador = window.setTimeout(() => {
-      void intentarReproducir();
-    }, 150);
+      void reproducirVideo();
+    }, 300);
 
-    /*
-      Segundo intento cuando el cliente toca
-      o presiona cualquier parte de la página.
-    */
-    document.addEventListener(
-      "touchstart",
-      reproducirAlInteractuar,
-      {
-        passive: true,
+    const reanudarVideo = () => {
+      const video = videoRef.current;
+
+      if (
+        document.visibilityState === "visible" &&
+        video &&
+        video.paused
+      ) {
+        void reproducirVideo();
       }
-    );
-
-    document.addEventListener(
-      "pointerdown",
-      reproducirAlInteractuar
-    );
-
-    window.addEventListener(
-      "pageshow",
-      reproducirAlInteractuar
-    );
+    };
 
     document.addEventListener(
       "visibilitychange",
-      reproducirAlRegresar
+      reanudarVideo
     );
 
     return () => {
       window.clearTimeout(temporizador);
 
       document.removeEventListener(
-        "touchstart",
-        reproducirAlInteractuar
-      );
-
-      document.removeEventListener(
-        "pointerdown",
-        reproducirAlInteractuar
-      );
-
-      window.removeEventListener(
-        "pageshow",
-        reproducirAlInteractuar
-      );
-
-      document.removeEventListener(
         "visibilitychange",
-        reproducirAlRegresar
+        reanudarVideo
       );
     };
-  }, [intentarReproducir]);
+  }, []);
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-black">
@@ -127,42 +66,24 @@ export default function VideoHero() {
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         controls={false}
         disablePictureInPicture
         aria-hidden="true"
         tabIndex={-1}
-        onLoadedData={() => {
-          void intentarReproducir();
+        onLoadedMetadata={() => {
+          void reproducirVideo();
         }}
         onCanPlay={() => {
-          void intentarReproducir();
-        }}
-        onPause={() => {
-          /*
-            Evita mostrar el botón mientras el video
-            todavía está cargando inicialmente.
-          */
-          const video = videoRef.current;
-
-          if (
-            video &&
-            video.readyState >=
-              HTMLMediaElement.HAVE_CURRENT_DATA
-          ) {
-            setNecesitaToque(true);
-          }
+          void reproducirVideo();
         }}
         onPlaying={() => {
-          setNecesitaToque(false);
+          setMostrarBoton(false);
         }}
-        className="
-          absolute
-          inset-0
-          h-full
-          w-full
-          object-cover
-        "
+        onError={() => {
+          setMostrarBoton(true);
+        }}
+        className="absolute inset-0 h-full w-full object-cover"
       >
         <source
           src="/videos/hero-alfstore.mp4"
@@ -172,12 +93,11 @@ export default function VideoHero() {
         Tu navegador no puede reproducir este video.
       </video>
 
-      {/* BOTÓN DE RESPALDO PARA CELULARES */}
-      {necesitaToque && (
+      {mostrarBoton && (
         <button
           type="button"
           onClick={() => {
-            void intentarReproducir();
+            void reproducirVideo();
           }}
           className="
             absolute
@@ -192,20 +112,18 @@ export default function VideoHero() {
             rounded-full
             border
             border-white/30
-            bg-black/75
-            px-6
-            py-4
+            bg-black/80
+            px-5
+            py-3
             text-xs
             font-black
             uppercase
-            tracking-[0.14em]
+            tracking-wider
             text-white
             backdrop-blur-md
-            transition
             active:scale-95
-            md:hidden
           "
-          aria-label="Reproducir video"
+          aria-label="Reproducir video principal"
         >
           <span
             className="
@@ -218,13 +136,10 @@ export default function VideoHero() {
               bg-red-700
             "
           >
-            <Play
-              size={19}
-              fill="currentColor"
-            />
+            <Play size={18} fill="currentColor" />
           </span>
 
-          Reproducir
+          Reproducir video
         </button>
       )}
     </div>

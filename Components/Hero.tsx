@@ -1,6 +1,10 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
+
 import {
   ArrowDown,
   ArrowRight,
@@ -19,7 +23,7 @@ export default function Hero() {
         relative
         flex
         h-[100svh]
-        min-h-[650px]
+        min-h-[620px]
         max-h-[950px]
         w-full
         items-center
@@ -30,54 +34,45 @@ export default function Hero() {
         text-white
       "
     >
-      {/* VIDEO COMPATIBLE CON CELULARES Y TABLETS */}
+      {/* VIDEO */}
       <VideoHero />
 
-      {/* CAPA OSCURA SOBRE EL VIDEO */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          bg-black/55
-        "
-      />
+      {/* CAPAS OSCURAS */}
+      <div className="pointer-events-none absolute inset-0 bg-black/50" />
 
-      {/* SOMBRA SUPERIOR E INFERIOR */}
       <div
         className="
           pointer-events-none
           absolute
           inset-0
           bg-gradient-to-b
-          from-black/80
+          from-black/75
           via-black/20
           to-black
         "
       />
 
-      {/* SOMBRA LATERAL */}
       <div
         className="
           pointer-events-none
           absolute
           inset-0
           bg-gradient-to-r
-          from-black/85
+          from-black/80
           via-black/20
-          to-black/60
+          to-black/55
         "
       />
 
-      {/* BRILLO ROJO IZQUIERDO */}
+      {/* EFECTOS SOLO EN COMPUTADORA */}
       <motion.div
         aria-hidden="true"
         animate={
           reducirMovimiento
             ? undefined
             : {
-                opacity: [0.25, 0.5, 0.25],
-                scale: [1, 1.15, 1],
+                opacity: [0.2, 0.45, 0.2],
+                scale: [1, 1.1, 1],
               }
         }
         transition={{
@@ -90,22 +85,23 @@ export default function Hero() {
           absolute
           -left-40
           top-1/3
+          hidden
           h-[500px]
           w-[500px]
           rounded-full
-          bg-red-700/25
+          bg-red-700/20
           blur-[140px]
+          md:block
         "
       />
 
-      {/* BRILLO ROJO DERECHO */}
       <motion.div
         aria-hidden="true"
         animate={
           reducirMovimiento
             ? undefined
             : {
-                opacity: [0.15, 0.35, 0.15],
+                opacity: [0.15, 0.3, 0.15],
                 scale: [1.1, 0.95, 1.1],
               }
         }
@@ -119,15 +115,17 @@ export default function Hero() {
           absolute
           -right-48
           bottom-0
+          hidden
           h-[520px]
           w-[520px]
           rounded-full
           bg-red-900/20
           blur-[150px]
+          md:block
         "
       />
 
-      {/* LÍNEA DECORATIVA SUPERIOR */}
+      {/* LÍNEA DECORATIVA */}
       <motion.div
         initial={{
           width: 0,
@@ -138,8 +136,7 @@ export default function Hero() {
           opacity: 1,
         }}
         transition={{
-          duration: reducirMovimiento ? 0 : 1.4,
-          delay: reducirMovimiento ? 0 : 0.2,
+          duration: reducirMovimiento ? 0 : 1.2,
         }}
         className="
           pointer-events-none
@@ -154,7 +151,7 @@ export default function Hero() {
         "
       />
 
-      {/* CONTENIDO PRINCIPAL */}
+      {/* CONTENIDO */}
       <div
         className="
           relative
@@ -173,7 +170,6 @@ export default function Hero() {
           lg:text-left
         "
       >
-        {/* ETIQUETA SUPERIOR */}
         <motion.div
           initial={{
             opacity: 0,
@@ -185,7 +181,7 @@ export default function Hero() {
           }}
           transition={{
             duration: reducirMovimiento ? 0 : 0.7,
-            delay: reducirMovimiento ? 0 : 0.2,
+            delay: reducirMovimiento ? 0 : 0.15,
           }}
           className="
             mb-5
@@ -195,7 +191,7 @@ export default function Hero() {
             rounded-full
             border
             border-red-600/40
-            bg-black/50
+            bg-black/55
             px-4
             py-2
             backdrop-blur-md
@@ -211,7 +207,7 @@ export default function Hero() {
               text-[9px]
               font-black
               uppercase
-              tracking-[0.28em]
+              tracking-[0.25em]
               text-zinc-300
               sm:text-xs
             "
@@ -220,19 +216,18 @@ export default function Hero() {
           </span>
         </motion.div>
 
-        {/* TÍTULO PRINCIPAL */}
         <motion.h1
           initial={{
             opacity: 0,
-            y: reducirMovimiento ? 0 : 50,
+            y: reducirMovimiento ? 0 : 45,
           }}
           animate={{
             opacity: 1,
             y: 0,
           }}
           transition={{
-            duration: reducirMovimiento ? 0 : 0.9,
-            delay: reducirMovimiento ? 0 : 0.35,
+            duration: reducirMovimiento ? 0 : 0.85,
+            delay: reducirMovimiento ? 0 : 0.3,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
@@ -254,40 +249,39 @@ export default function Hero() {
           <motion.span
             initial={{
               opacity: 0,
-              x: reducirMovimiento ? 0 : -40,
+              x: reducirMovimiento ? 0 : -35,
             }}
             animate={{
               opacity: 1,
               x: 0,
             }}
             transition={{
-              duration: reducirMovimiento ? 0 : 0.8,
-              delay: reducirMovimiento ? 0 : 0.75,
+              duration: reducirMovimiento ? 0 : 0.7,
+              delay: reducirMovimiento ? 0 : 0.65,
             }}
             className="
               mt-1
               block
               text-red-600
-              drop-shadow-[0_0_35px_rgba(220,38,38,0.35)]
+              drop-shadow-[0_0_30px_rgba(220,38,38,0.3)]
             "
           >
             el carácter
           </motion.span>
         </motion.h1>
 
-        {/* DESCRIPCIÓN */}
         <motion.p
           initial={{
             opacity: 0,
-            y: reducirMovimiento ? 0 : 25,
+            y: reducirMovimiento ? 0 : 20,
           }}
           animate={{
             opacity: 1,
             y: 0,
           }}
           transition={{
-            duration: reducirMovimiento ? 0 : 0.8,
-            delay: reducirMovimiento ? 0 : 0.95,
+            duration: reducirMovimiento ? 0 : 0.7,
+            delay: reducirMovimiento ? 0 : 0.85,
           }}
           className="
             mt-7
@@ -305,19 +299,18 @@ export default function Hero() {
           para seguir las reglas.
         </motion.p>
 
-        {/* BOTONES */}
         <motion.div
           initial={{
             opacity: 0,
-            y: reducirMovimiento ? 0 : 25,
+            y: reducirMovimiento ? 0 : 20,
           }}
           animate={{
             opacity: 1,
             y: 0,
           }}
           transition={{
-            duration: reducirMovimiento ? 0 : 0.8,
-            delay: reducirMovimiento ? 0 : 1.15,
+            duration: reducirMovimiento ? 0 : 0.7,
+            delay: reducirMovimiento ? 0 : 1,
           }}
           className="
             mt-9
@@ -328,25 +321,19 @@ export default function Hero() {
             gap-3
             sm:w-auto
             sm:flex-row
-            lg:items-start
           "
         >
-          {/* BOTÓN VER COLECCIÓN */}
           <motion.a
             href="#catalogo"
             whileHover={
               reducirMovimiento
                 ? undefined
-                : {
-                    scale: 1.04,
-                  }
+                : { scale: 1.03 }
             }
             whileTap={
               reducirMovimiento
                 ? undefined
-                : {
-                    scale: 0.97,
-                  }
+                : { scale: 0.97 }
             }
             className="
               group
@@ -363,9 +350,9 @@ export default function Hero() {
               text-xs
               font-black
               uppercase
-              tracking-[0.15em]
+              tracking-[0.14em]
               text-white
-              shadow-[0_0_35px_rgba(185,28,28,0.3)]
+              shadow-[0_0_30px_rgba(185,28,28,0.3)]
               transition
               hover:bg-red-600
               sm:w-auto
@@ -383,22 +370,17 @@ export default function Hero() {
             />
           </motion.a>
 
-          {/* BOTÓN HISTORIA */}
           <motion.a
             href="#historia"
             whileHover={
               reducirMovimiento
                 ? undefined
-                : {
-                    scale: 1.04,
-                  }
+                : { scale: 1.03 }
             }
             whileTap={
               reducirMovimiento
                 ? undefined
-                : {
-                    scale: 0.97,
-                  }
+                : { scale: 0.97 }
             }
             className="
               flex
@@ -409,13 +391,13 @@ export default function Hero() {
               rounded-full
               border
               border-white/25
-              bg-black/40
+              bg-black/45
               px-8
               py-4
               text-xs
               font-black
               uppercase
-              tracking-[0.15em]
+              tracking-[0.14em]
               text-white
               backdrop-blur-md
               transition
@@ -429,20 +411,15 @@ export default function Hero() {
           </motion.a>
         </motion.div>
 
-        {/* FRASE INFERIOR */}
         <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{
-            duration: reducirMovimiento ? 0 : 1,
-            delay: reducirMovimiento ? 0 : 1.4,
+            duration: reducirMovimiento ? 0 : 0.8,
+            delay: reducirMovimiento ? 0 : 1.2,
           }}
           className="
-            mt-10
+            mt-9
             flex
             items-center
             gap-3
@@ -457,7 +434,6 @@ export default function Hero() {
               uppercase
               tracking-[0.3em]
               text-zinc-500
-              sm:text-[10px]
             "
           >
             Not for everyone
@@ -465,23 +441,19 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* INDICADOR PARA BAJAR */}
+      {/* INDICADOR INFERIOR */}
       <motion.a
         href="#catalogo"
-        aria-label="Bajar hacia la colección"
-        initial={{
-          opacity: 0,
-        }}
-        animate={{
-          opacity: 1,
-        }}
+        aria-label="Ir al catálogo"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{
-          duration: reducirMovimiento ? 0 : 0.8,
-          delay: reducirMovimiento ? 0 : 1.7,
+          duration: reducirMovimiento ? 0 : 0.7,
+          delay: reducirMovimiento ? 0 : 1.4,
         }}
         className="
           absolute
-          bottom-5
+          bottom-4
           left-1/2
           z-20
           flex
@@ -489,7 +461,6 @@ export default function Hero() {
           flex-col
           items-center
           gap-2
-          text-center
         "
       >
         <span
@@ -499,7 +470,6 @@ export default function Hero() {
             uppercase
             tracking-[0.3em]
             text-zinc-500
-            sm:text-[9px]
           "
         >
           Explorar
@@ -510,7 +480,7 @@ export default function Hero() {
             reducirMovimiento
               ? undefined
               : {
-                  y: [0, 6, 0],
+                  y: [0, 5, 0],
                 }
           }
           transition={{
@@ -527,7 +497,7 @@ export default function Hero() {
             rounded-full
             border
             border-white/20
-            bg-black/40
+            bg-black/50
             text-red-500
             backdrop-blur-sm
           "
