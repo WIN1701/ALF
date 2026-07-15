@@ -37,28 +37,27 @@ video {
   background-color: #000000;
 }
 
-/* Celulares táctiles */
-@media (pointer: coarse) and (max-width: 640px) {
+.catalogo-grid > article {
+  min-width: 0;
+  height: 100%;
+}
+
+/* Celulares normales y celulares en modo escritorio */
+@media (pointer: coarse) and (max-width: 1100px) {
   .catalogo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
-/* Celulares en modo computadora y tablets */
-@media (pointer: coarse) and (min-width: 641px) and (max-width: 1000px) {
+/* Tablets táctiles grandes */
+@media (pointer: coarse) and (min-width: 1101px) and (max-width: 1500px) {
   .catalogo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr)) !important;
   }
 }
 
-/* Tablets grandes */
-@media (pointer: coarse) and (min-width: 1001px) and (max-width: 1400px) {
-  .catalogo-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-}
-
-/* Reduce animaciones en dispositivos que lo solicitan */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

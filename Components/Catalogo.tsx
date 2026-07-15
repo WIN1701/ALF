@@ -67,10 +67,11 @@ export default function Catalogo() {
   );
 
   useEffect(() => {
+    const overflowAnterior =
+      document.body.style.overflow;
+
     if (imagenAmpliada) {
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
     }
 
     const cerrarConEscape = (
@@ -87,7 +88,8 @@ export default function Catalogo() {
     );
 
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow =
+        overflowAnterior;
 
       window.removeEventListener(
         "keydown",
@@ -136,7 +138,7 @@ export default function Catalogo() {
 
     window.setTimeout(() => {
       abrirCarrito();
-    }, 300);
+    }, 250);
   };
 
   const cambiarPagina = (
@@ -169,9 +171,10 @@ export default function Catalogo() {
           scroll-mt-24
           bg-black
           px-3
-          py-20
+          py-16
           text-white
           sm:px-6
+          sm:py-20
           lg:px-8
         "
       >
@@ -209,8 +212,24 @@ export default function Catalogo() {
                 mt-4
                 max-w-xl
                 text-sm
+                leading-6
                 text-zinc-400
                 sm:text-base
+              "
+            >
+              Selecciona una talla y agrega la
+              camisa al carrito. Presiona la imagen
+              para verla ampliada.
+            </p>
+
+            <p
+              className="
+                mt-3
+                text-xs
+                font-bold
+                uppercase
+                tracking-wider
+                text-red-500
               "
             >
               Página {paginaActual} de{" "}
@@ -218,12 +237,13 @@ export default function Catalogo() {
             </p>
           </div>
 
-          {/* PRODUCTOS */}
+          {/* CUADRÍCULA DE PRODUCTOS */}
           <div
             className="
               catalogo-grid
               grid
               grid-cols-2
+              items-stretch
               gap-3
               sm:grid-cols-3
               sm:gap-5
@@ -242,16 +262,17 @@ export default function Catalogo() {
                   productoAgregado ===
                   producto.id;
 
-                const tieneError =
+                const imagenConError =
                   imagenesConError[
                     producto.id
-                  ];
+                  ] === true;
 
                 return (
                   <article
                     key={producto.id}
                     className="
                       flex
+                      h-full
                       min-w-0
                       flex-col
                       overflow-hidden
@@ -267,9 +288,9 @@ export default function Catalogo() {
                     {/* IMAGEN */}
                     <button
                       type="button"
-                      disabled={tieneError}
+                      disabled={imagenConError}
                       onClick={() => {
-                        if (!tieneError) {
+                        if (!imagenConError) {
                           setImagenAmpliada(
                             producto.imagen
                           );
@@ -282,14 +303,13 @@ export default function Catalogo() {
                         aspect-[4/5]
                         w-full
                         shrink-0
-                        cursor-zoom-in
                         overflow-hidden
                         bg-[#050505]
                         disabled:cursor-default
                       "
                       aria-label={`Ampliar camisa ${producto.id}`}
                     >
-                      {tieneError ? (
+                      {imagenConError ? (
                         <div
                           className="
                             absolute
@@ -300,16 +320,16 @@ export default function Catalogo() {
                             justify-center
                             gap-3
                             bg-zinc-950
-                            px-4
+                            px-3
                             text-zinc-600
                           "
                         >
-                          <ImageOff size={32} />
+                          <ImageOff size={30} />
 
                           <span
                             className="
                               text-center
-                              text-[10px]
+                              text-[9px]
                               font-bold
                               uppercase
                               tracking-wider
@@ -323,8 +343,7 @@ export default function Catalogo() {
                           src={producto.imagen}
                           alt={`Camisa AlfStore ${producto.id}`}
                           fill
-                          loading="lazy"
-                          quality={65}
+                          quality={70}
                           sizes="
                             (max-width: 640px) 50vw,
                             (max-width: 1024px) 33vw,
@@ -342,7 +361,6 @@ export default function Catalogo() {
                           className="
                             object-contain
                             object-center
-                            p-1
                             transition-transform
                             duration-300
                             group-hover:scale-[1.02]
@@ -350,7 +368,7 @@ export default function Catalogo() {
                         />
                       )}
 
-                      {!tieneError && (
+                      {!imagenConError && (
                         <>
                           <div
                             className="
@@ -417,29 +435,18 @@ export default function Catalogo() {
                       )}
                     </button>
 
-                    {/* INFORMACIÓN */}
+                    {/* TALLAS Y BOTÓN */}
                     <div
                       className="
                         flex
                         flex-1
                         flex-col
+                        border-t
+                        border-white/10
                         p-3
                         sm:p-4
                       "
                     >
-                      <p
-                        className="
-                          mb-1
-                          text-center
-                          text-xs
-                          font-black
-                          uppercase
-                          text-white
-                        "
-                      >
-                        Camisa #{producto.id}
-                      </p>
-
                       <p
                         className="
                           mb-4
@@ -447,6 +454,7 @@ export default function Catalogo() {
                           text-[10px]
                           font-bold
                           uppercase
+                          leading-4
                           tracking-[0.1em]
                           text-zinc-400
                           sm:text-xs
@@ -456,7 +464,15 @@ export default function Catalogo() {
                       </p>
 
                       {/* TALLAS */}
-                      <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                      <div
+                        className="
+                          grid
+                          w-full
+                          grid-cols-4
+                          gap-1.5
+                          sm:gap-2
+                        "
+                      >
                         {tallas.map((talla) => {
                           const seleccionada =
                             tallaElegida === talla;
@@ -474,7 +490,7 @@ export default function Catalogo() {
                               className={`
                                 flex
                                 aspect-square
-                                min-h-9
+                                min-w-0
                                 items-center
                                 justify-center
                                 rounded-full
@@ -483,7 +499,6 @@ export default function Catalogo() {
                                 font-semibold
                                 transition
                                 duration-200
-                                sm:min-h-10
                                 sm:text-sm
 
                                 ${
@@ -505,7 +520,7 @@ export default function Catalogo() {
                         type="button"
                         disabled={
                           !tallaElegida ||
-                          tieneError
+                          imagenConError
                         }
                         onClick={() =>
                           agregarProducto(
@@ -519,39 +534,49 @@ export default function Catalogo() {
                           w-full
                           items-center
                           justify-center
-                          gap-2
+                          gap-1.5
                           rounded-xl
                           px-2
                           text-center
-                          text-[9px]
+                          text-[8px]
                           font-black
                           uppercase
-                          tracking-[0.04em]
+                          leading-4
+                          tracking-[0.03em]
                           transition
                           sm:min-h-12
+                          sm:gap-2
                           sm:text-xs
 
                           ${
                             tallaElegida &&
-                            !tieneError
+                            !imagenConError
                               ? "cursor-pointer bg-red-700 text-white hover:bg-red-600 active:scale-[0.98]"
                               : "cursor-not-allowed bg-zinc-800 text-zinc-500"
                           }
                         `}
                       >
                         {fueAgregado ? (
-                          <Check size={17} />
+                          <Check
+                            size={16}
+                            className="shrink-0"
+                          />
                         ) : (
-                          <ShoppingBag size={17} />
+                          <ShoppingBag
+                            size={16}
+                            className="shrink-0"
+                          />
                         )}
 
-                        {tieneError
-                          ? "No disponible"
-                          : fueAgregado
-                            ? "Agregado"
-                            : tallaElegida
-                              ? "Agregar al carrito"
-                              : "Elige una talla"}
+                        <span>
+                          {imagenConError
+                            ? "No disponible"
+                            : fueAgregado
+                              ? "Agregado"
+                              : tallaElegida
+                                ? "Agregar"
+                                : "Elige talla"}
+                        </span>
                       </button>
                     </div>
                   </article>
@@ -599,12 +624,9 @@ export default function Catalogo() {
                 hover:bg-red-700
                 disabled:cursor-not-allowed
                 disabled:opacity-30
-                sm:gap-2
-                sm:px-4
-                sm:text-xs
               "
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={17} />
               Anterior
             </button>
 
@@ -673,13 +695,10 @@ export default function Catalogo() {
                 hover:bg-red-700
                 disabled:cursor-not-allowed
                 disabled:opacity-30
-                sm:gap-2
-                sm:px-4
-                sm:text-xs
               "
             >
               Siguiente
-              <ChevronRight size={18} />
+              <ChevronRight size={17} />
             </button>
           </div>
         </div>
@@ -741,7 +760,7 @@ export default function Catalogo() {
                 rounded-full
                 border
                 border-white/20
-                bg-black/80
+                bg-black/85
                 text-white
                 transition
                 hover:bg-red-700
@@ -757,6 +776,7 @@ export default function Catalogo() {
                 h-[70vh]
                 max-h-[680px]
                 w-full
+                bg-black
               "
             >
               <Image
@@ -764,7 +784,7 @@ export default function Catalogo() {
                 alt="Vista ampliada de la camisa"
                 fill
                 priority
-                quality={80}
+                quality={85}
                 sizes="(max-width: 640px) 92vw, 520px"
                 className="
                   object-contain
