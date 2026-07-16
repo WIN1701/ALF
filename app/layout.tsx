@@ -1,44 +1,30 @@
-import type {
-  Metadata,
-  Viewport,
-} from "next";
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
 
 import "./globals.css";
 
-import { CartProvider } from "@/app/context/cartcontext";
+import { CartProvider } from "./context/cartcontext";
+import Carrito from "../Components/carrito";
 
 export const metadata: Metadata = {
-  title:
-    "AlfStore | Streetwear Oversize",
+  title: "AlfStore",
   description:
-    "AlfStore: diseños streetwear oversize. Del caos nace el carácter. No hacemos ropa, creamos identidad.",
-  applicationName: "AlfStore",
-  icons: {
-    icon: "/logo.png.jpeg",
-    shortcut: "/logo.png.jpeg",
-    apple: "/logo.png.jpeg",
-  },
+    "AlfStore Streetwear. Del caos nace el carácter.",
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 5,
-  viewportFit: "cover",
-  themeColor: "#000000",
-  colorScheme: "dark",
-};
+interface RootLayoutProps {
+  children: ReactNode;
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: RootLayoutProps) {
   return (
     <html lang="es">
-      <body>
+      <body className="min-h-screen overflow-x-hidden bg-black text-white antialiased">
         <CartProvider>
           {children}
+          <Carrito />
         </CartProvider>
       </body>
     </html>

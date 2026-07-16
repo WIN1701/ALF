@@ -1,55 +1,93 @@
 "use client";
 
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { ImageOff } from "lucide-react";
 
 interface ImagenProductoProps {
-  src: string;
+  id: number;
   alt: string;
+  priority?: boolean;
   sizes?: string;
   className?: string;
+  onRutaValida?: (ruta: string) => void;
+  onFalloTotal?: () => void;
 }
 
 export default function ImagenProducto({
-  src,
+  id,
   alt,
-  sizes = "100vw",
-  className = "object-contain",
+  priority = false,
+  sizes = "(max-width: 640px) 50vw, 25vw",
+  className = "",
+  onRutaValida,
+  onFalloTotal,
 }: ImagenProductoProps) {
-  const [tieneError, setTieneError] =
-    useState(false);
+  const extensiones = useMemo(() => {
+    if (id <= 4) {
+      return ["webp", "jpg", "jpeg", "png"];
+    }
+
+    return ["jpg", "webp", "jpeg", "png"];
+  }, [id]);
+
+  const [indiceExtension, setIndiceExtension] =
+    useState(0);
 
   useEffect(() => {
-    setTieneError(false);
-  }, [src]);
+    setIndiceExtension(0);
+  }, [id]);
 
-  if (tieneError) {
+  const numero = String(id).padStart(3, "0");
+
+  const sinImagen =
+    indiceExtension >= extensiones.length;
+
+  if (sinImagen) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center bg-zinc-950">
-        <div className="text-center">
-          <p className="text-3xl font-black uppercase text-red-600">
-            ALF
-          </p>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-zinc-950 text-zinc-600">
+        <ImageOff size={30} />
 
-          <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.25em] text-zinc-500">
-            Imagen no disponible
-          </p>
-        </div>
+        <span className="text-[9px] font-black uppercase">
+          Imagen no disponible
+        </span>
       </div>
     );
   }
 
+  const extension = extensiones[indiceExtension];
+
+  const ruta =
+    `/productos/camisa${numero}.${extension}`;
+
   return (
     <Image
-      src={src}
+      key={ruta}
+      src={ruta}
       alt={alt}
       fill
+      unoptimized
+      priority={priority}
       sizes={sizes}
-      quality={78}
-      loading="lazy"
       draggable={false}
-      onError={() => setTieneError(true)}
-      className={className}
+      onLoad={() => {
+        onRutaValida?.(ruta);
+      }}
+      onError={() => {
+        const siguiente = indiceExtension + 1;
+
+        if (siguiente >= extensiones.length) {
+          onFalloTotal?.();
+        }
+
+        setIndiceExtension(siguiente);
+      }}
+      className={`producto-foto ${className}`}
     />
   );
 }

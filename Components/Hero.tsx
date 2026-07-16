@@ -1,102 +1,298 @@
+import {
+  ArrowDown,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
+
+import VideoHero from "./VideoHero";
+
 export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative isolate flex min-h-[calc(100svh-88px)] w-full items-center overflow-hidden border-b border-red-950"
+      className="
+        alf-hero
+        relative
+        flex
+        min-h-[100svh]
+        w-full
+        items-center
+        overflow-hidden
+        bg-black
+        pt-20
+        text-white
+      "
     >
-      <video
-        className="hero-video absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        poster="/fondo-unificado.jpg"
-        aria-label="Video urbano de AlfStore"
-      >
-        <source
-          src="/video.mp4"
-          type="video/mp4"
-        />
-      </video>
+      {/* VIDEO DE FONDO */}
+      <VideoHero />
 
-      {/* Oscurecimiento suave: el video sigue visible */}
-      <div className="absolute inset-0 bg-black/25" />
+      {/* CAPAS PARA QUE LAS LETRAS SE LEAN */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-black/35" />
 
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/25 to-black/20" />
-
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
-
-      {/* Luces rojas urbanas */}
-      <div className="absolute -left-32 top-1/3 h-[420px] w-[420px] rounded-full bg-red-700/25 blur-[110px]" />
-
-      <div className="absolute -right-32 bottom-0 h-[380px] w-[380px] rounded-full bg-red-600/20 blur-[120px]" />
-
-      <div className="urban-grid absolute inset-0 opacity-20" />
-
-      {/* Logo grande detrás del texto */}
-      <img
-        src="/logo.png.jpeg"
-        alt=""
-        aria-hidden="true"
-        width={650}
-        height={400}
-        className="pointer-events-none absolute right-[-120px] top-1/2 hidden max-h-[480px] w-[650px] -translate-y-1/2 object-contain opacity-[0.12] md:block"
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          z-[2]
+          bg-gradient-to-b
+          from-black/70
+          via-black/10
+          to-black
+        "
       />
 
-      <div className="hero-copy relative z-10 mx-auto w-full max-w-[1500px] px-5 py-20 sm:px-8 lg:px-14">
-        <div className="max-w-5xl">
-          <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-red-500/70 bg-black/60 px-5 py-3">
-            <span className="h-2 w-2 rounded-full bg-red-500 shadow-[0_0_18px_rgba(239,68,68,1)]" />
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          z-[2]
+          bg-gradient-to-r
+          from-black/75
+          via-black/10
+          to-black/45
+        "
+      />
 
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white sm:text-xs">
-              AlfStore — Streetwear
-            </span>
-          </div>
+      {/* MARCA GRANDE DE FONDO */}
+      <div
+        aria-hidden="true"
+        className="
+          alf-watermark
+          pointer-events-none
+          absolute
+          left-1/2
+          top-1/2
+          z-[3]
+          -translate-x-1/2
+          -translate-y-1/2
+          select-none
+        "
+      >
+        ALF
+      </div>
 
-          <h1 className="hero-title max-w-5xl text-[clamp(3.3rem,11vw,8.8rem)] font-black uppercase leading-[0.84] tracking-[-0.06em] text-white">
-            Del caos nace
-            <span className="mt-2 block text-red-600">
-              el carácter.
-            </span>
-          </h1>
+      {/* CONTENIDO */}
+      <div
+        className="
+          relative
+          z-10
+          mx-auto
+          flex
+          w-full
+          max-w-7xl
+          flex-col
+          items-center
+          px-5
+          text-center
+          sm:px-8
+          lg:items-start
+          lg:px-10
+          lg:text-left
+        "
+      >
+        <div
+          className="
+            mb-5
+            flex
+            items-center
+            gap-2
+            rounded-full
+            border
+            border-red-600/50
+            bg-black/65
+            px-4
+            py-2
+            backdrop-blur-sm
+          "
+        >
+          <Sparkles
+            size={14}
+            className="text-red-500"
+          />
 
-          <div className="mt-8 max-w-2xl border-l-4 border-red-600 bg-black/45 px-5 py-4">
-            <p className="text-lg font-black uppercase leading-tight tracking-wide text-white sm:text-2xl">
-              No hacemos ropa.
-            </p>
+          <span
+            className="
+              text-[9px]
+              font-black
+              uppercase
+              tracking-[0.25em]
+              text-zinc-200
+              sm:text-xs
+            "
+          >
+            AlfStore Streetwear
+          </span>
+        </div>
 
-            <p className="mt-1 text-lg font-black uppercase leading-tight tracking-wide text-red-500 sm:text-2xl">
-              Creamos identidad.
-            </p>
-          </div>
+        <h1
+          className="
+            hero-title
+            max-w-5xl
+            text-5xl
+            font-black
+            uppercase
+            leading-[0.88]
+            tracking-[-0.055em]
+            text-white
+            sm:text-6xl
+            md:text-7xl
+            lg:text-8xl
+            xl:text-9xl
+          "
+        >
+          Del caos nace
 
-          <p className="mt-7 max-w-xl text-sm font-medium leading-7 text-zinc-200 sm:text-base">
-            Diseños oversize nacidos de la
-            calle, el carácter y la libertad de
-            vestir sin seguir las reglas de los
-            demás.
-          </p>
+          <span
+            className="
+              mt-1
+              block
+              text-red-600
+              drop-shadow-[0_0_25px_rgba(239,16,28,0.35)]
+            "
+          >
+            el carácter
+          </span>
+        </h1>
 
-          <div className="mt-9 flex flex-wrap gap-4">
-            <a
-              href="#catalogo"
-              className="inline-flex min-h-14 items-center justify-center rounded-xl bg-red-600 px-8 text-xs font-black uppercase tracking-[0.2em] text-white shadow-[0_0_30px_rgba(220,38,38,0.35)] transition-colors hover:bg-red-500"
-            >
-              Ver colección
-            </a>
+        <p
+          className="
+            mt-7
+            max-w-xl
+            text-sm
+            leading-6
+            text-zinc-200
+            sm:text-base
+            sm:leading-7
+            lg:text-lg
+          "
+        >
+          No hacemos ropa. Creamos identidad.
+          Diseños urbanos para quienes no nacieron
+          para seguir las reglas.
+        </p>
 
-            <a
-              href="#historia"
-              className="inline-flex min-h-14 items-center justify-center rounded-xl border border-white/50 bg-black/45 px-8 text-xs font-black uppercase tracking-[0.2em] text-white transition-colors hover:border-red-500 hover:text-red-500"
-            >
-              Conoce AlfStore
-            </a>
-          </div>
+        <div
+          className="
+            mt-9
+            flex
+            w-full
+            flex-col
+            items-center
+            gap-3
+            sm:w-auto
+            sm:flex-row
+          "
+        >
+          <a
+            href="#catalogo"
+            className="
+              group
+              flex
+              min-h-12
+              w-full
+              items-center
+              justify-center
+              gap-3
+              rounded-full
+              bg-red-700
+              px-8
+              py-4
+              text-xs
+              font-black
+              uppercase
+              tracking-[0.12em]
+              text-white
+              transition
+              hover:bg-red-600
+              sm:w-auto
+            "
+          >
+            Ver colección
+
+            <ArrowRight
+              size={18}
+              className="transition-transform group-hover:translate-x-1"
+            />
+          </a>
+
+          <a
+            href="#historia"
+            className="
+              flex
+              min-h-12
+              w-full
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-white/30
+              bg-black/55
+              px-8
+              py-4
+              text-xs
+              font-black
+              uppercase
+              tracking-[0.12em]
+              text-white
+              backdrop-blur-sm
+              transition
+              hover:bg-white
+              hover:text-black
+              sm:w-auto
+            "
+          >
+            Nuestra historia
+          </a>
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 z-10 h-[3px] bg-gradient-to-r from-transparent via-red-600 to-transparent" />
+      {/* INDICADOR INFERIOR */}
+      <a
+        href="#catalogo"
+        aria-label="Ir al catálogo"
+        className="
+          absolute
+          bottom-4
+          left-1/2
+          z-20
+          flex
+          -translate-x-1/2
+          flex-col
+          items-center
+          gap-2
+        "
+      >
+        <span
+          className="
+            text-[8px]
+            font-black
+            uppercase
+            tracking-[0.3em]
+            text-zinc-400
+          "
+        >
+          Explorar
+        </span>
+
+        <span
+          className="
+            flex
+            h-10
+            w-7
+            items-center
+            justify-center
+            rounded-full
+            border
+            border-white/25
+            bg-black/55
+            text-red-500
+          "
+        >
+          <ArrowDown size={16} />
+        </span>
+      </a>
     </section>
   );
 }

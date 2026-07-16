@@ -1,61 +1,54 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --alf-black: #000000;
   --alf-dark: #070707;
-  --alf-card: #0b0b0b;
   --alf-red: #ef101c;
-  --alf-red-dark: #7f0710;
   --alf-white: #ffffff;
-  --alf-gray: #b4b4b8;
+  --alf-gray: #b7b7bd;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   width: 100%;
-  max-width: 100%;
   min-height: 100%;
   scroll-behavior: smooth;
-  background: var(--alf-black);
+  scroll-padding-top: 80px;
+  background-color: var(--alf-black);
 }
 
 body {
   width: 100%;
-  max-width: 100%;
-  min-height: 100%;
+  min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  background: var(--alf-black);
+  background-color: var(--alf-black);
   color: var(--alf-white);
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-  text-rendering: optimizeLegibility;
+  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body,
-button,
-a,
-input,
-textarea,
-select {
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
 }
 
 main {
   width: 100%;
   max-width: 100%;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 img,
@@ -65,42 +58,28 @@ video {
 }
 
 video {
-  background: #000000;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  border: 0;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:disabled {
-  cursor: not-allowed;
+  background-color: var(--alf-black);
 }
 
 ::selection {
-  background: var(--alf-red);
-  color: white;
+  background-color: var(--alf-red);
+  color: var(--alf-white);
 }
 
-/* Fondo general más vivo y urbano */
+/* Fondo general de AlfStore */
+
 .alf-page {
   position: relative;
   isolation: isolate;
   background:
     radial-gradient(
-      circle at 8% 15%,
-      rgba(239, 16, 28, 0.12),
+      circle at 10% 16%,
+      rgba(239, 16, 28, 0.11),
       transparent 28rem
     ),
     radial-gradient(
-      circle at 92% 48%,
-      rgba(160, 0, 12, 0.1),
+      circle at 90% 55%,
+      rgba(140, 0, 10, 0.1),
       transparent 32rem
     ),
     linear-gradient(
@@ -111,141 +90,121 @@ button:disabled {
     );
 }
 
+/* Hero y video */
+
+.alf-hero {
+  min-height: calc(100vh - 80px);
+  min-height: calc(100svh - 80px);
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  background-color: #000000;
+}
+
+/* Letras principales */
+
+.hero-title {
+  font-family:
+    Impact,
+    "Arial Black",
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  text-shadow:
+    0 4px 0 rgba(0, 0, 0, 0.9),
+    0 10px 30px rgba(0, 0, 0, 0.95),
+    0 0 26px rgba(239, 16, 28, 0.22);
+}
+
+/* Marca ALF de fondo */
+
+.alf-watermark {
+  font-family:
+    Impact,
+    "Arial Black",
+    Arial,
+    sans-serif;
+
+  font-size: clamp(9rem, 28vw, 30rem);
+  font-weight: 900;
+  line-height: 0.75;
+  letter-spacing: -0.08em;
+  color: transparent;
+  opacity: 0.11;
+  -webkit-text-stroke: 2px rgba(239, 16, 28, 0.85);
+}
+
+/* Cuadrícula decorativa */
+
+.urban-grid {
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px
+    );
+
+  background-size: 42px 42px;
+}
+
+/* Secciones oscuras */
+
 .urban-section {
   background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.018) 25%,
-      transparent 25%
-    ),
-    linear-gradient(
-      225deg,
-      rgba(255, 255, 255, 0.012) 25%,
-      transparent 25%
-    ),
     radial-gradient(
       circle at 85% 15%,
       rgba(239, 16, 28, 0.1),
       transparent 24rem
     ),
     #020202;
-  background-size:
-    28px 28px,
-    28px 28px,
-    auto,
-    auto;
 }
 
-/* Video visible y con color */
-.hero-video {
-  opacity: 0.96;
-  object-position: center center;
-}
+/* Catálogo */
 
-/* Cuadrícula urbana encima del video */
-.urban-grid {
-  background-image:
-    linear-gradient(
-      rgba(255, 255, 255, 0.07) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0.07) 1px,
-      transparent 1px
-    );
-  background-size: 42px 42px;
-}
-
-/* Letras principales con más fuerza */
-.hero-title {
-  text-shadow:
-    0 4px 0 rgba(0, 0, 0, 0.8),
-    0 10px 35px rgba(0, 0, 0, 0.95),
-    0 0 28px rgba(239, 16, 28, 0.16);
-}
-
-.hero-copy {
-  animation: aparecerAlf 700ms ease-out both;
-}
-
-@keyframes aparecerAlf {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-/* Catálogo estable para Chrome, Samsung,
-   Firefox, Edge y navegadores internos */
 .catalogo-grid {
-  position: relative;
-  isolation: isolate;
   width: 100%;
+  align-items: stretch;
 }
 
 .producto-card {
-  position: relative;
-  isolation: isolate;
+  width: 100%;
   min-width: 0;
-  contain: layout paint;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.025),
-      transparent 45%
-    ),
-    #070707;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  transform: none !important;
-  will-change: auto !important;
+  overflow: hidden;
 }
 
-.producto-card:hover {
-  border-color: rgba(
-    239,
-    16,
-    28,
-    0.75
-  );
-}
+/*
+  No se modifica position, width ni height de las
+  imágenes de Next.js. Esto evita que aparezcan
+  largas, repetidas o dañadas en teléfonos.
+*/
 
-/* Ayuda a que el navegador no dibuje
-   las 120 tarjetas al mismo tiempo */
-@supports (content-visibility: auto) {
-  .producto-card {
-    content-visibility: auto;
-    contain-intrinsic-size: 560px;
+/* Altura correcta del carrito en móviles */
+
+@supports (height: 100dvh) {
+  .h-\[100dvh\] {
+    height: 100dvh;
   }
 }
 
-/* Scrollbar urbana */
-::-webkit-scrollbar {
-  width: 9px;
-}
-
-::-webkit-scrollbar-track {
-  background: #050505;
-}
-
-::-webkit-scrollbar-thumb {
-  border: 2px solid #050505;
-  border-radius: 999px;
-  background: #5f0a10;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--alf-red);
-}
-
 /* Celulares */
+
 @media (max-width: 767px) {
+  .alf-hero {
+    min-height: calc(100vh - 80px);
+    min-height: calc(100svh - 80px);
+  }
+
   .hero-video {
-    object-position: 55% center;
+    object-position: center center;
   }
 
   .hero-title {
@@ -253,20 +212,19 @@ button:disabled {
       0 4px 0 rgba(0, 0, 0, 0.9),
       0 8px 22px rgba(0, 0, 0, 0.95);
   }
+}
 
-  .producto-card {
-    transition: border-color 160ms ease;
-  }
+/* Computadoras */
 
-  .producto-card * {
-    animation: none !important;
+@media (min-width: 768px) {
+  .hero-video {
+    object-position: center 38%;
   }
 }
 
-/* Personas que desactivan animaciones */
-@media (
-  prefers-reduced-motion: reduce
-) {
+/* Accesibilidad */
+
+@media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
@@ -277,5 +235,26 @@ button:disabled {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
+
+/* Barra de desplazamiento */
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid #050505;
+  border-radius: 999px;
+  background-color: #650910;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--alf-red);
 }

@@ -1,57 +1,41 @@
+import {
+  ArrowRight,
+  Flame,
+} from "lucide-react";
+
 export default function Banner() {
   return (
-    <section
-      id="filosofia"
-      className="relative overflow-hidden bg-black px-4 py-20 sm:px-6 sm:py-28"
-    >
-      <div className="relative mx-auto min-h-[430px] w-full max-w-7xl overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-2xl">
-        {/* Imagen de fondo */}
+    <section className="border-y border-red-900/30 bg-red-950/20 px-5 py-20 text-white">
+      <div className="mx-auto max-w-7xl rounded-3xl border border-red-800/30 bg-black px-6 py-14 sm:px-12">
+        <div className="flex flex-col items-center justify-between gap-10 text-center lg:flex-row lg:text-left">
+          <div>
+            <div className="mb-5 flex items-center justify-center gap-2 lg:justify-start">
+              <Flame
+                size={18}
+                className="text-red-600"
+              />
 
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('/fondos/banner.jpg')",
-          }}
-        />
+              <p className="text-xs font-black uppercase tracking-[0.25em] text-red-500">
+                Not for everyone
+              </p>
+            </div>
 
-        {/* Oscurecimiento */}
+            <h2 className="text-3xl font-black uppercase sm:text-5xl">
+              La calle no sigue tendencias.
 
-        <div className="absolute inset-0 bg-black/75" />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
-
-        {/* Efecto rojo */}
-
-        <div className="absolute -left-32 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-red-700/20 blur-3xl" />
-
-        <div className="absolute -right-32 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-red-700/20 blur-3xl" />
-
-        {/* Contenido */}
-
-        <div className="relative z-10 flex min-h-[430px] w-full items-center justify-center px-6 py-16 text-center sm:px-10">
-          <div className="w-full max-w-4xl">
-            <p className="text-xs font-black uppercase tracking-[0.35em] text-red-600">
-              Filosofía AlfStore
-            </p>
-
-            <h2 className="alfstore-logo mt-7 break-words text-6xl leading-[0.85] sm:text-7xl md:text-8xl lg:text-9xl">
-              Not for everyone.
+              <span className="block text-red-600">
+                Las crea.
+              </span>
             </h2>
-
-            <div className="mx-auto mt-8 h-1 w-20 rounded-full bg-red-600" />
-
-            <p className="mx-auto mt-8 max-w-2xl break-words text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
-              La moda cambia, pero el carácter permanece. AlfStore representa
-              autenticidad, rebeldía e identidad urbana.
-            </p>
-
-            <a
-              href="#catalogo"
-              className="mt-10 inline-flex items-center justify-center rounded-lg border border-red-600 bg-red-600 px-7 py-4 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:bg-transparent hover:text-red-500"
-            >
-              Ver colección
-            </a>
           </div>
+
+          <a
+            href="#catalogo"
+            className="flex min-h-12 items-center gap-3 rounded-full bg-red-700 px-8 text-xs font-black uppercase"
+          >
+            Explorar colección
+            <ArrowRight size={18} />
+          </a>
         </div>
       </div>
     </section>
