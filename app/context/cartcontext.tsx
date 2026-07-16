@@ -74,13 +74,14 @@ export function CartProvider({
   const agregarAlCarrito = useCallback(
     (producto: ProductoBase, talla: Talla) => {
       setCarrito((carritoAnterior) => {
-        const existente = carritoAnterior.find(
-          (item) =>
-            item.id === producto.id &&
-            item.talla === talla
-        );
+        const productoExistente =
+          carritoAnterior.find(
+            (item) =>
+              item.id === producto.id &&
+              item.talla === talla
+          );
 
-        if (existente) {
+        if (productoExistente) {
           return carritoAnterior.map((item) =>
             item.id === producto.id &&
             item.talla === talla

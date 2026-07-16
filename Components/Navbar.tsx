@@ -128,7 +128,9 @@ export default function Navbar() {
                   font-black
                 "
               >
-                {cantidadTotal}
+                {cantidadTotal > 99
+                  ? "99+"
+                  : cantidadTotal}
               </span>
             )}
           </button>

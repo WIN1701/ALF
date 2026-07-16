@@ -130,14 +130,7 @@ export default function Catalogo() {
       return;
     }
 
-    agregarAlCarrito(
-      {
-        id: producto.id,
-        imagen: producto.imagen,
-      },
-      talla
-    );
-
+    agregarAlCarrito(producto, talla);
     setProductoAgregado(producto.id);
 
     window.setTimeout(() => {
@@ -171,15 +164,6 @@ export default function Catalogo() {
     }, 100);
   };
 
-  const marcarImagenConError = (
-    productoId: number
-  ) => {
-    setImagenesConError((anterior) => ({
-      ...anterior,
-      [productoId]: true,
-    }));
-  };
-
   return (
     <>
       <section
@@ -202,17 +186,16 @@ export default function Catalogo() {
               AlfStore
             </p>
 
-            <h2 className="text-3xl font-black uppercase tracking-tight sm:text-5xl">
+            <h2 className="text-3xl font-black uppercase sm:text-5xl">
               Nuestra colección
             </h2>
 
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-zinc-400 sm:text-base">
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-zinc-400">
               Selecciona una talla y agrega la
-              camisa al carrito. Presiona la imagen
-              para verla ampliada.
+              camisa al carrito.
             </p>
 
-            <p className="mt-3 text-xs font-bold uppercase tracking-wider text-red-500">
+            <p className="mt-3 text-xs font-bold uppercase text-red-500">
               Página {paginaActual} de{" "}
               {totalPaginas}
             </p>
@@ -222,9 +205,7 @@ export default function Catalogo() {
             className="
               catalogo-grid
               grid
-              w-full
               grid-cols-2
-              items-stretch
               gap-3
               sm:grid-cols-3
               sm:gap-5
@@ -254,7 +235,6 @@ export default function Catalogo() {
                     className="
                       producto-card
                       flex
-                      h-full
                       min-w-0
                       flex-col
                       overflow-hidden
@@ -264,7 +244,6 @@ export default function Catalogo() {
                       bg-[#080808]
                     "
                   >
-                    {/* CONTENEDOR RELATIVE PARA IMAGE FILL */}
                     <button
                       type="button"
                       disabled={imagenConError}
@@ -277,154 +256,100 @@ export default function Catalogo() {
                       }}
                       className="
                         group
-                        relative
                         block
                         aspect-[4/5]
                         w-full
-                        shrink-0
                         overflow-hidden
                         border-0
                         bg-[#050505]
                         p-0
-                        disabled:cursor-default
                       "
-                      aria-label={`Ampliar camisa ${producto.id}`}
                     >
                       {imagenConError ? (
-                        <div
-                          className="
-                            absolute
-                            inset-0
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            gap-3
-                            bg-zinc-950
-                            px-3
-                            text-zinc-600
-                          "
-                        >
+                        <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-zinc-950 text-zinc-600">
                           <ImageOff size={30} />
 
-                          <span className="text-center text-[9px] font-black uppercase tracking-wider">
+                          <span className="text-[9px] font-black uppercase">
                             Imagen no disponible
                           </span>
                         </div>
                       ) : (
-                        <Image
-                          src={producto.imagen}
-                          alt={`Camisa AlfStore ${producto.id}`}
-                          fill
-                          unoptimized
-                          priority={
-                            paginaActual === 1 &&
-                            producto.id <= 4
-                          }
-                          sizes="
-                            (max-width: 640px) 50vw,
-                            (max-width: 1024px) 33vw,
-                            (max-width: 1280px) 25vw,
-                            20vw
-                          "
-                          onError={() => {
-                            marcarImagenConError(
-                              producto.id
-                            );
-                          }}
-                          className="
-                            object-contain
-                            object-center
-                          "
-                        />
-                      )}
+                        <div className="relative h-full w-full">
+                          <Image
+                            src={producto.imagen}
+                            alt={`Camisa AlfStore ${producto.id}`}
+                            width={900}
+                            height={1125}
+                            unoptimized
+                            priority={
+                              paginaActual === 1 &&
+                              producto.id <= 4
+                            }
+                            onError={() => {
+                              setImagenesConError(
+                                (anterior) => ({
+                                  ...anterior,
+                                  [producto.id]:
+                                    true,
+                                })
+                              );
+                            }}
+                            className="
+                              h-full
+                              w-full
+                              object-contain
+                              object-center
+                            "
+                          />
 
-                      {!imagenConError && (
-                        <span
-                          className="
-                            absolute
-                            bottom-3
-                            right-3
-                            z-10
-                            flex
-                            h-9
-                            w-9
-                            items-center
-                            justify-center
-                            rounded-full
-                            border
-                            border-white/25
-                            bg-black/85
-                            text-white
-                          "
-                        >
-                          <ZoomIn size={18} />
-                        </span>
+                          <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-black/85 text-white">
+                            <ZoomIn size={18} />
+                          </span>
+                        </div>
                       )}
                     </button>
 
-                    <div
-                      className="
-                        flex
-                        min-h-[175px]
-                        flex-1
-                        flex-col
-                        border-t
-                        border-white/10
-                        p-3
-                        sm:min-h-[195px]
-                        sm:p-4
-                      "
-                    >
-                      <p className="mb-1 text-center text-[9px] font-bold uppercase tracking-wider text-zinc-600">
+                    <div className="flex min-h-[175px] flex-1 flex-col border-t border-white/10 p-3 sm:min-h-[195px] sm:p-4">
+                      <p className="mb-1 text-center text-[9px] font-bold uppercase text-zinc-600">
                         Camisa #{producto.id}
                       </p>
 
-                      <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.08em] text-zinc-400 sm:text-xs">
+                      <p className="mb-4 text-center text-[10px] font-bold uppercase text-zinc-400 sm:text-xs">
                         Selecciona tu talla
                       </p>
 
-                      <div className="grid w-full grid-cols-4 gap-1.5 sm:gap-2">
-                        {TALLAS.map((talla) => {
-                          const seleccionada =
-                            tallaSeleccionada ===
-                            talla;
+                      <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+                        {TALLAS.map((talla) => (
+                          <button
+                            key={talla}
+                            type="button"
+                            onClick={() =>
+                              seleccionarTalla(
+                                producto.id,
+                                talla
+                              )
+                            }
+                            className={`
+                              flex
+                              aspect-square
+                              items-center
+                              justify-center
+                              rounded-full
+                              border
+                              text-xs
+                              font-bold
 
-                          return (
-                            <button
-                              key={talla}
-                              type="button"
-                              onClick={() => {
-                                seleccionarTalla(
-                                  producto.id,
-                                  talla
-                                );
-                              }}
-                              className={`
-                                flex
-                                aspect-square
-                                min-w-0
-                                items-center
-                                justify-center
-                                rounded-full
-                                border
-                                text-xs
-                                font-bold
-                                transition
-                                sm:text-sm
-
-                                ${
-                                  seleccionada
-                                    ? "border-red-500 bg-red-700 text-white"
-                                    : "border-white/20 bg-black text-zinc-400"
-                                }
-                              `}
-                              aria-label={`Seleccionar talla ${talla}`}
-                            >
-                              {talla}
-                            </button>
-                          );
-                        })}
+                              ${
+                                tallaSeleccionada ===
+                                talla
+                                  ? "border-red-500 bg-red-700 text-white"
+                                  : "border-white/20 bg-black text-zinc-400"
+                              }
+                            `}
+                          >
+                            {talla}
+                          </button>
+                        ))}
                       </div>
 
                       <button
@@ -433,9 +358,9 @@ export default function Catalogo() {
                           !tallaSeleccionada ||
                           imagenConError
                         }
-                        onClick={() => {
-                          agregarProducto(producto);
-                        }}
+                        onClick={() =>
+                          agregarProducto(producto)
+                        }
                         className={`
                           mt-auto
                           flex
@@ -449,15 +374,12 @@ export default function Catalogo() {
                           text-[8px]
                           font-black
                           uppercase
-                          tracking-wide
-                          transition
-                          sm:min-h-12
                           sm:text-xs
 
                           ${
                             tallaSeleccionada &&
                             !imagenConError
-                              ? "bg-red-700 text-white hover:bg-red-600 active:scale-[0.98]"
+                              ? "bg-red-700 text-white"
                               : "cursor-not-allowed bg-zinc-800 text-zinc-500"
                           }
                         `}
@@ -486,79 +408,33 @@ export default function Catalogo() {
           <div className="mt-12 flex items-center justify-center gap-2">
             <button
               type="button"
-              onClick={() => {
+              onClick={() =>
                 cambiarPagina(
                   paginaActual - 1
-                );
-              }}
+                )
+              }
               disabled={paginaActual === 1}
-              className="
-                flex
-                h-11
-                items-center
-                gap-1
-                rounded-lg
-                border
-                border-white/15
-                bg-zinc-950
-                px-3
-                text-[9px]
-                font-black
-                uppercase
-                disabled:opacity-30
-                sm:text-xs
-              "
+              className="flex h-11 items-center gap-1 rounded-lg border border-white/15 bg-zinc-950 px-3 text-[9px] font-black uppercase disabled:opacity-30"
             >
               <ChevronLeft size={17} />
               Anterior
             </button>
 
-            <span
-              className="
-                flex
-                h-11
-                min-w-16
-                items-center
-                justify-center
-                rounded-lg
-                border
-                border-red-700/50
-                bg-red-950/30
-                px-3
-                text-xs
-                font-black
-                text-red-400
-              "
-            >
+            <span className="flex h-11 min-w-16 items-center justify-center rounded-lg border border-red-700/50 bg-red-950/30 px-3 text-xs font-black text-red-400">
               {paginaActual}/{totalPaginas}
             </span>
 
             <button
               type="button"
-              onClick={() => {
+              onClick={() =>
                 cambiarPagina(
                   paginaActual + 1
-                );
-              }}
+                )
+              }
               disabled={
                 paginaActual === totalPaginas
               }
-              className="
-                flex
-                h-11
-                items-center
-                gap-1
-                rounded-lg
-                border
-                border-white/15
-                bg-zinc-950
-                px-3
-                text-[9px]
-                font-black
-                uppercase
-                disabled:opacity-30
-                sm:text-xs
-              "
+              className="flex h-11 items-center gap-1 rounded-lg border border-white/15 bg-zinc-950 px-3 text-[9px] font-black uppercase disabled:opacity-30"
             >
               Siguiente
               <ChevronRight size={17} />
@@ -567,92 +443,38 @@ export default function Catalogo() {
         </div>
       </section>
 
-      {/* VISTA AMPLIADA CON CONTENEDOR RELATIVE */}
       {imagenAmpliada && (
         <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Vista ampliada del producto"
-          className="
-            fixed
-            inset-0
-            z-[9999]
-            flex
-            items-center
-            justify-center
-            bg-black/90
-            px-4
-            py-6
-          "
-          onClick={() => {
-            setImagenAmpliada(null);
-          }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 px-4 py-6"
+          onClick={() =>
+            setImagenAmpliada(null)
+          }
         >
           <div
-            className="
-              relative
-              w-full
-              max-w-lg
-              overflow-hidden
-              rounded-2xl
-              border
-              border-white/20
-              bg-black
-            "
-            onClick={(evento) => {
-              evento.stopPropagation();
-            }}
+            className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/20 bg-black"
+            onClick={(evento) =>
+              evento.stopPropagation()
+            }
           >
             <button
               type="button"
-              onClick={() => {
-                setImagenAmpliada(null);
-              }}
-              className="
-                absolute
-                right-3
-                top-3
-                z-20
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-white/20
-                bg-black/90
-                text-white
-              "
-              aria-label="Cerrar imagen"
+              onClick={() =>
+                setImagenAmpliada(null)
+              }
+              className="absolute right-3 top-3 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/90"
             >
               <X size={24} />
             </button>
 
-            <div
-              className="
-                relative
-                h-[70dvh]
-                max-h-[680px]
-                w-full
-                overflow-hidden
-                bg-black
-              "
-            >
-              <Image
-                src={imagenAmpliada}
-                alt="Vista ampliada de la camisa"
-                fill
-                unoptimized
-                priority
-                sizes="(max-width: 640px) 92vw, 520px"
-                className="
-                  object-contain
-                  object-center
-                  p-2
-                "
-              />
-            </div>
+            <Image
+              src={imagenAmpliada}
+              alt="Vista ampliada de la camisa"
+              width={900}
+              height={1125}
+              unoptimized
+              priority
+              className="max-h-[75dvh] w-full object-contain"
+            />
           </div>
         </div>
       )}

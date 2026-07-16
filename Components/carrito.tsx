@@ -38,11 +38,29 @@ export default function Carrito() {
 
     document.body.style.overflow = "hidden";
 
+    const cerrarConEscape = (
+      evento: KeyboardEvent
+    ) => {
+      if (evento.key === "Escape") {
+        cerrarCarrito();
+      }
+    };
+
+    window.addEventListener(
+      "keydown",
+      cerrarConEscape
+    );
+
     return () => {
       document.body.style.overflow =
         overflowAnterior;
+
+      window.removeEventListener(
+        "keydown",
+        cerrarConEscape
+      );
     };
-  }, [carritoAbierto]);
+  }, [carritoAbierto, cerrarCarrito]);
 
   const continuarComprando = () => {
     cerrarCarrito();
